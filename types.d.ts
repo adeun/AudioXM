@@ -15,7 +15,7 @@ declare module "next-auth" {
       */
      interface User { 
           id: string,
-          role: string
+         
      }
      /**
       * The shape of the account object returned in the OAuth providers' `account` callback,
@@ -28,7 +28,7 @@ declare module "next-auth" {
       */
      interface Session {
           user: {
-               role: string,
+              
                id: string,
 
 
@@ -44,7 +44,7 @@ declare module "next-auth/jwt" {
      interface JWT {
           
           /** OpenID ID Token */
-          role: string,
+         
           id: string,
           idToken?: string
      }

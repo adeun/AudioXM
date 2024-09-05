@@ -15,7 +15,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           jwt({ token, user }) {
                if (user && user.id) { // User is available during sign-in
                     token.id = user.id
-                    token.role = user.role
+                    
                }
                return token
           },
@@ -27,7 +27,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     , user: {
                          ...session.user,
                          id: token.id,
-                         role: token.role
+                         
                     }
                }
           },
