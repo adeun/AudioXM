@@ -8,6 +8,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
      session: {
           strategy: "jwt"
      },
+     secret: process.env.AUTH_SECRET,
+     debug: true, // enable debug logs
      providers: [],
      callbacks: {
           jwt({ token, user }) {
