@@ -69,7 +69,7 @@ export default function AudioBar({  songs , currentSong , setCurrentSong ,listSo
           }
           play();
 
-     }, [playSong, listSongs, songs, currentSong])
+     }, [playSong, listSongs, songs, currentSong ,setSongs])
      // Shuffle future has not been implemented
      function ShuffleToggle() {
           setShuffle(!shuffle);
