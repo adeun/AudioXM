@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 
 import { cn } from "@/lib/utils"
+import ProviderQueryClient from "@/components/Provider/QueryClient";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -36,8 +37,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <main className=" flex flex-col min-h-screen ">
-            {children}
-            
+            <ProviderQueryClient>
+
+              {children}
+            </ProviderQueryClient>
+
           </main>
           <Toaster />
         </ThemeProvider>
