@@ -15,10 +15,15 @@ import { Eye, EyeOff } from 'lucide-react'
 import { z } from 'zod'
 import { zodLoginForm, zodSignUpForm } from '@/lib/ZOD'
 import { useToast } from "@/components/ui/use-toast"
+import { useMutation } from '@tanstack/react-query'
+import { LoginRoute } from '@/server/authAction/Login'
 
 
 export default function AuthCard() {
      const [authState, seAuthState] = useState<"login" | "signUp">("login")
+     const LoginMutation = useMutation({
+          mutationFn:LoginRoute
+     })
      const { toast } = useToast()
 
      const [pass, setPass] = useState({
@@ -52,6 +57,7 @@ export default function AuthCard() {
 
           }
           if (VerifyLogin.data){
+               LoginMutation.mutate(VerifyLogin.data)
                toast({
                     title: "Login Successful",
                     description: "Welcome",

@@ -10,13 +10,15 @@ datasource db {
 
 model User {
   id            String          @id @default(cuid())
-  name          String?
+  name          String
   email         String          @unique
   emailVerified DateTime?
   image         String?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   password      String
+  PhoneNumber   Int
+  birthDay      String
   accounts      Account[]
   Authenticator Authenticator[]
   sessions      Session[]
