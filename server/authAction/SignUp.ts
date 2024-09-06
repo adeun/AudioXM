@@ -12,10 +12,10 @@ export default async function SignUpRoute(data:z.infer< typeof zodSignUpForm>) {
           const hashedPassword = await bcrypt.hash(password, 10)
           const user = await prisma.user.create({
                data: {
-                    email,
+                    email : email,
                     password: hashedPassword,
-                    name,
-                    birthDay,
+                    name: name,
+                    birth:birthDay,
                     PhoneNumber
                },
           })

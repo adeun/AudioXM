@@ -17,12 +17,16 @@ import { zodLoginForm, zodSignUpForm } from '@/lib/ZOD'
 import { useToast } from "@/components/ui/use-toast"
 import { useMutation } from '@tanstack/react-query'
 import { LoginRoute } from '@/server/authAction/Login'
+import SignUpRoute from '@/server/authAction/SignUp'
 
 
 export default function AuthCard() {
      const [authState, seAuthState] = useState<"login" | "signUp">("login")
      const LoginMutation = useMutation({
           mutationFn:LoginRoute
+     })
+     const SignUpMutation = useMutation({
+          mutationFn:SignUpRoute
      })
      const { toast } = useToast()
 
@@ -80,10 +84,12 @@ export default function AuthCard() {
 
           }
           if (VerifyLogin.data){
+               SignUpMutation.mutate(VerifyLogin.data)
                toast({
                     title: "Sign Up Successful",
                     description: "Welcome",
                })
+               seAuthState('login')
                setSignUpForm({ email: "", password: "", confirmPassword: "", name: "", PhoneNumber: 0, birthDay: "" })
               
           }
@@ -150,6 +156,7 @@ export default function AuthCard() {
                                              <Label htmlFor="email">Your email address</Label>
                                              <Input
                                                   className=' w-[285px] '
+                                                  disabled ={SignUpMutation.isPending}
 
 
                                                   type="email"
@@ -166,6 +173,7 @@ export default function AuthCard() {
                                              <Label htmlFor="name">Your full name</Label>
                                              <Input
                                                   className=' w-[285px]'
+                                                  disabled ={SignUpMutation.isPending}
                                                   type="text"
                                                   id="name"
                                                   name="name"
@@ -179,6 +187,7 @@ export default function AuthCard() {
                                         <div>
                                              <Label htmlFor="PhoneNumber">Your Phone Number </Label>
                                              <Input
+                                               disabled ={SignUpMutation.isPending}
                                                   className=' w-[285px]'
                                                   type="number"
                                                   id="PhoneNumber"
@@ -198,6 +207,7 @@ export default function AuthCard() {
                                              <Label htmlFor="birthDay"> birthDay</Label>
                                              <Input
                                                   className=' w-[285px]'
+                                                  disabled ={SignUpMutation.isPending}
                                                   type="Date"
                                                   id="birthDay"
                                                   name="password"
@@ -215,6 +225,7 @@ export default function AuthCard() {
                                              <div className=' flex flex-row gap-2 items-center'>
                                                   <Input
                                                        className=' w-[285px]'
+                                                       disabled ={SignUpMutation.isPending}
                                                        type={pass.password ? "password" : "text"}
                                                        id="password"
                                                        name="password"
@@ -235,6 +246,7 @@ export default function AuthCard() {
                                              <Label htmlFor="confirmPassword"> verify password</Label>
                                              <div className=' flex flex-row gap-2 items-center'>
                                                   <Input
+                                                    disabled ={SignUpMutation.isPending}
                                                        className=' w-[285px]'
                                                        type={pass.confirmPassword ? "password" : "text"}
                                                        id="confirmPassword"
@@ -259,7 +271,7 @@ export default function AuthCard() {
 
                               </CardContent>
                               <CardFooter>
-                                   <Button onClick={SignUp}>signUp</Button>
+                                   <Button   disabled ={SignUpMutation.isPending} onClick={SignUp}>signUp</Button>
                                    <Button onClick={() => seAuthState("login")} variant="link"> already have an account</Button>
                               </CardFooter>
                          </Card>

@@ -18,7 +18,7 @@ model User {
   updatedAt     DateTime        @updatedAt
   password      String
   PhoneNumber   Int
-  birthDay      String
+  birth         String
   accounts      Account[]
   Authenticator Authenticator[]
   sessions      Session[]
