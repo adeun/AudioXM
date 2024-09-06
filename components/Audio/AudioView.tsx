@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import AudioBar from './AudioBar';
 import useSound from 'use-sound';
-import { toAudioAsBase64 } from '@/lib/Bass64';
+import { convertAudioToBase64, toAudioAsBase64 } from '@/lib/Bass64';
 import AudioListCard from './AudioListCard';
 import { LoaderCircle, Plus } from 'lucide-react';
 type AudioList = {
@@ -58,10 +58,28 @@ export default function AudioView() {
 
 
 
-     
+     // This is the translation to include the duration of the audio and convert the file to a base 64 for testing
+     useEffect(() => {
+          const oldData = [
+               { name: "Tell Me Who", path: "/Tell Me Who.mp3", id: "645", author: ["dsd", "erw"] },
+               { name: "BOXINLION - Black and White (feat. MJ Ultra)", path: "/BOXINLION - Black and White (feat. MJ Ultra).mp3", id: "456", author: ["map", "yop"] },
+               { name: "Matbow", path: "/All I Wanna Do (ω Matbow).mp3", id: "766", author: ["vop", "getX", "gane", "gave"] },
+          ]
+          async function Clean() {
+               const newData = await Promise.all(oldData.map(async (item) => {
+                    const { data, duration } = await convertAudioToBase64(item.path)
+                    return { ...item, path: data, duration: duration }
 
 
+               }))
+               setListSongs(newData)
 
+          }
+          Clean()
+
+
+     }, [])
+     // Go to the next song
 
      // Select Song from the list of songs on the table
      function SelectSong(id: string) {
