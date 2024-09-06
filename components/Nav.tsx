@@ -9,8 +9,17 @@ import {
      DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ModeToggle } from './darkMode';
-
-export default function Nav() {
+import { User } from 'next-auth';
+import { signOut } from '@/server/auth';
+type NavProps = {
+     user:User
+}
+export default function Nav({user}:NavProps) {
+     async function Logout() {
+          await signOut()
+         
+          
+     }
      return (
           <div className=' flex flex-row h-14 border-b-[1.5px]  border-primary' >
                {/* logo */}
@@ -27,7 +36,7 @@ export default function Nav() {
                {/* user profile dropdown  theme*/}
                <div className=' flex flex-row gap-1 items-center'>
                     <DropdownMenu>
-                         <DropdownMenuTrigger>jale</DropdownMenuTrigger>
+                         <DropdownMenuTrigger>{user.name}</DropdownMenuTrigger>
                          <DropdownMenuContent>
                               <DropdownMenuLabel>My Account</DropdownMenuLabel>
                               <DropdownMenuSeparator />
@@ -35,6 +44,7 @@ export default function Nav() {
                               <DropdownMenuItem>Billing</DropdownMenuItem>
                               <DropdownMenuItem>Team</DropdownMenuItem>
                               <DropdownMenuItem>Subscription</DropdownMenuItem>
+                              <DropdownMenuItem className='bg-destructive text-destructive-foreground hover:bg-destructive/90' onClick={()=>Logout()} >logout</DropdownMenuItem>
                          </DropdownMenuContent>
                     </DropdownMenu>
                     <ModeToggle/>
