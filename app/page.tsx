@@ -1,11 +1,11 @@
 import BackIcon from "@/components/BackIcon";
-import Test from "@/components/test";
-import Image from "next/image";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
+import { auth } from '@/server/auth'
 import AuthCard from "@/components/auth/AuthCard";
 
-export default function Home() {
+export default async function Home() {
+  
   return (
     <>
       <main className="flex flex-col flex-1 relative  overflow-clip">

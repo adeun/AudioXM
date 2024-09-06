@@ -3,7 +3,7 @@
 import { zodSignUpForm } from "@/lib/ZOD";
 import prisma from "../db";
 import { z } from "zod";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 
 export default async function SignUpRoute(data:z.infer< typeof zodSignUpForm>) {

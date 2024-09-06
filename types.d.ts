@@ -46,6 +46,7 @@ declare module "next-auth/jwt" {
           /** OpenID ID Token */
          
           id: string,
+          email:string
           idToken?: string
      }
 }
