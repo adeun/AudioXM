@@ -1,3 +1,5 @@
+// auth.ts
+
 import NextAuth from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import Credentials from "next-auth/providers/credentials"
@@ -47,7 +49,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                          if (!getUser) { return null; }
 
                          // validate the password
-                         const validate = await bcrypt.compare(getUser.password, password)
+                         const validate = await bcrypt.compare(password ,getUser.password)
                          if (validate) {
                               return getUser;
                          }
