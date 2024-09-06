@@ -27,6 +27,9 @@ export default  middleware((req) => {
      if (isAuthRoute && user ){
           return NextResponse.redirect(new URL('/Home', req.nextUrl));
      }
+     if (isProtectedRoute && !user){
+          return NextResponse.redirect(new URL('/', req.nextUrl));
+     }
 
 
 
