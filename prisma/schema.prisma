@@ -17,8 +17,8 @@ model User {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   password      String
-  PhoneNumber   Int
   birth         String
+  PhoneNumber   BigInt
   accounts      Account[]
   Authenticator Authenticator[]
   sessions      Session[]
