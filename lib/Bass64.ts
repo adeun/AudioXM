@@ -1,46 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { FileDetails, ToAudioDetails } from './type';
-export function convertAudioToBase64(filePath: string): Promise<{ data: string, duration: number }> {
-     return new Promise((resolve, reject) => {
-          fetch(filePath)
-               .then(response => response.blob()) // Fetch the audio file as a Blob
-               .then(blob => {
-                    const audio = new Audio();
-                    const objectUrl = URL.createObjectURL(blob);
-                    audio.src = objectUrl;
 
-                    audio.onloadedmetadata = () => { // Fetch the audio metadata 
-                         const reader = new FileReader();
-                         reader.onloadend = () => {
-                              if (reader.result) {
-                                   URL.revokeObjectURL(objectUrl)
-                                   resolve({
-                                        data: reader.result as string,
-                                        duration: audio.duration
-                                   }); // Resolve the promise with the Base64 string
-                              } else {
-                                   reject('Failed to convert audio to Base64');
-                              }
-                         };
-                         reader.onerror = () => reject(reader.error); // Handle any errors
-
-                         reader.readAsDataURL(blob); // Convert the Blob to a Base64 Data URL
-
-                    }
-
-
-
-                    audio.onerror = (error) => {
-                         URL.revokeObjectURL(objectUrl); // Clean up on error
-                         reject('Failed to load audio metadata');
-                    };
-
-
-
-               })
-               .catch(error => reject(error));
-     });
-}
 function formatFileSize(bytes: number): string {
      if (bytes >= 1073741824) {
        return (bytes / 1073741824).toFixed(2) + ' GB';

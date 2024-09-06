@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import AudioBar from './AudioBar';
 import useSound from 'use-sound';
-import { convertAudioToBase64, toAudioAsBase64 } from '@/lib/Bass64';
+import { toAudioAsBase64 } from '@/lib/Bass64';
 import AudioListCard from './AudioListCard';
 import { LoaderCircle, Plus } from 'lucide-react';
 type AudioList = {
