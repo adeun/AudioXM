@@ -11,19 +11,24 @@ import {
 import { ModeToggle } from './darkMode';
 import { User } from 'next-auth';
 import LogOut from '@/server/authAction/LogOut';
+import { useMutation } from '@tanstack/react-query';
+import { LoaderCircle } from 'lucide-react';
 type NavProps = {
      user:User
 }
 export default function Nav({user}:NavProps) {
-      function Logout() {
-          console.log("logged out  from");
+     const LogoutM = useMutation({
+          mutationFn:LogOut
+     })
+     //  function Logout() {
+     //      console.log("logged out  from");
           
-          LogOut()
+     //      LogOut()
          
           
-     }
+     // }
      return (
-          <div className=' flex flex-row h-14 border-b-[1.5px]  border-primary' >
+          <div  className=' flex flex-row h-14 border-b-[1.5px]  border-primary' >
                {/* logo */}
                <div className=' flex items-center justify-center overflow-clip'>
                     <div className=''>
@@ -46,7 +51,7 @@ export default function Nav({user}:NavProps) {
                               <DropdownMenuItem>Billing</DropdownMenuItem>
                               <DropdownMenuItem>Team</DropdownMenuItem>
                               <DropdownMenuItem>Subscription</DropdownMenuItem>
-                              <DropdownMenuItem className='bg-destructive text-destructive-foreground hover:bg-destructive/90' onClick={()=>Logout()} >logout</DropdownMenuItem>
+                              <DropdownMenuItem className='bg-destructive text-destructive-foreground hover:bg-destructive/90' onClick={()=>LogoutM.mutate()} > {LogoutM.isPending && <LoaderCircle className=' animate-spin' />} logout</DropdownMenuItem>
                          </DropdownMenuContent>
                     </DropdownMenu>
                     <ModeToggle/>

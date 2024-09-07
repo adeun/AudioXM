@@ -11,7 +11,7 @@ import {
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, LoaderCircle } from 'lucide-react'
 import { z } from 'zod'
 import { zodLoginForm, zodSignUpForm } from '@/lib/ZOD'
 import { useToast } from "@/components/ui/use-toast"
@@ -109,6 +109,7 @@ export default function AuthCard() {
                                         <Label htmlFor="email">Your email address</Label>
                                         <Input
                                              type="email"
+                                             disabled={LoginMutation.isPending }
                                              id="email"
                                              name="email"
                                              placeholder="Enter your email"
@@ -123,6 +124,7 @@ export default function AuthCard() {
                                              <Input
                                                   className=''
                                                   type={pass.passwordLogin ? "password" : "text"}
+                                                  disabled={LoginMutation.isPending }
 
                                                   id="password"
                                                   name="password"
@@ -141,7 +143,7 @@ export default function AuthCard() {
 
                               </CardContent>
                               <CardFooter>
-                                   <Button onClick={Login}>Login</Button>
+                                   <Button disabled={LoginMutation.isPending } onClick={Login}>{LoginMutation.isPending && <LoaderCircle className=' animate-spin' />}Login</Button>
                                    <Button onClick={() => seAuthState("signUp")} variant="link"> create an account</Button>
                               </CardFooter>
                          </Card>
@@ -271,7 +273,7 @@ export default function AuthCard() {
 
                               </CardContent>
                               <CardFooter>
-                                   <Button   disabled ={SignUpMutation.isPending} onClick={SignUp}>signUp</Button>
+                                   <Button   disabled ={SignUpMutation.isPending} onClick={SignUp}>{SignUpMutation.isPending && <LoaderCircle className=' animate-spin' />}signUp</Button>
                                    <Button onClick={() => seAuthState("login")} variant="link"> already have an account</Button>
                               </CardFooter>
                          </Card>
