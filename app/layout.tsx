@@ -37,6 +37,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <main className=" flex flex-col min-h-screen ">
+            
             <ProviderQueryClient>
 
               {children}

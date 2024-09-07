@@ -10,15 +10,15 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ModeToggle } from './darkMode';
 import { User } from 'next-auth';
-import { signOut } from '@/server/auth';
+import LogOut from '@/server/authAction/LogOut';
 type NavProps = {
      user:User
 }
 export default function Nav({user}:NavProps) {
-     async function Logout() {
+      function Logout() {
           console.log("logged out  from");
           
-          await signOut()
+          LogOut()
          
           
      }
