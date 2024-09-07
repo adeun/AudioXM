@@ -44,7 +44,7 @@ export default function Nav({user}:NavProps) {
                               <DropdownMenuItem>Billing</DropdownMenuItem>
                               <DropdownMenuItem>Team</DropdownMenuItem>
                               <DropdownMenuItem>Subscription</DropdownMenuItem>
-                              <DropdownMenuItem className='bg-destructive text-destructive-foreground hover:bg-destructive/90' onClick={()=>Logout} >logout</DropdownMenuItem>
+                              <DropdownMenuItem className='bg-destructive text-destructive-foreground hover:bg-destructive/90' onClick={()=>Logout()} >logout</DropdownMenuItem>
                          </DropdownMenuContent>
                     </DropdownMenu>
                     <ModeToggle/>
