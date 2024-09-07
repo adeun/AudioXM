@@ -16,7 +16,7 @@ type NavProps = {
 }
 export default function Nav({user}:NavProps) {
      async function Logout() {
-          console.log("logged out");
+          console.log("logged out  from");
           
           await signOut()
          
