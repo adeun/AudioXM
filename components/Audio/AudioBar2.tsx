@@ -35,7 +35,14 @@ export default function AudioBar2({ mainSong, listSongs, currentSong, setCurrent
      const [shuffle, setShuffle] = useState(false);
      const [repeat, setRepeat] = useState(false);
 
-     
+     useEffect (()=>{
+          if (mainSong.path){
+               setIsPlaying(true);
+          }
+         
+
+
+     },[mainSong])
      useEffect(() => { // Pause the song or play the song
          
                if (audioRef.current) {
@@ -133,22 +140,13 @@ export default function AudioBar2({ mainSong, listSongs, currentSong, setCurrent
           setRepeat(!repeat);
           setShuffle(false)
      }
-     console.log({
-          isPlaying,
-          currentTime,
-          rawTime,
-          mainSong,
-          listSongs,
-          currentSong,
-         
-     });
+     
 
 
      return (
 
-          <div>
+          <div className=' flex flex-row gap-1 w-[50%] h-[80px]   p-1 '>
                <audio
-                   
                     ref={audioRef}
                     src={mainSong.path}
                     onTimeUpdate={onTimeUpdate}
@@ -163,7 +161,7 @@ export default function AudioBar2({ mainSong, listSongs, currentSong, setCurrent
                     }}
                />
                {/* song img and name  */}
-               <div>
+               <div className=' flex flex-row gap-1'>
                     {/* song Ing */}
                     <div className='flex  w-16 rounded-lg bg-primary/80 p-[2px] overflow-clip items-center justify-center'>
                          <h1 className=' text-primary-foreground/75 text-5xl'>{iconSizeNmw[0]}</h1>
@@ -174,13 +172,13 @@ export default function AudioBar2({ mainSong, listSongs, currentSong, setCurrent
                </div>
 
                {/* audio bar Controller */}
-               <div>
+               <div className=' flex flex-col flex-1 gap-1 '>
                     {/* the audio slider and time */}
-                    <div>
+                    <div className=' flex flex-row gap-2  items-center'>
                          {/* Current time */}
                          <p>{currentTime}</p>
                          {/* Audio slider */}
-                         <div>
+                         <div className=' flex-1'>
                               <Slider
                                    onValueChange={(value) => {
                                         console.log(value);
@@ -197,7 +195,7 @@ export default function AudioBar2({ mainSong, listSongs, currentSong, setCurrent
                     </div>
 
                     {/* play/pause button and Shuffle and repeat */}
-                    <div>
+                    <div className=' flex flex-row items-center p-1 justify-center'>
                          {/* Shuffle B  */}
                          <div>
                               <div onClick={ShuffleToggle}>
@@ -205,7 +203,7 @@ export default function AudioBar2({ mainSong, listSongs, currentSong, setCurrent
                               </div>
                          </div>
                          {/* play/pause  , Back and forward B  */}
-                         <div>
+                         <div className=' flex flex-row flex-1 gap-1  items-center justify-center'>
                               {/* Back button */}
                               <div onClick={BackButton}>
                                    <StepBack size={maxIconSize} className={`  hover:text-foreground/75`} />
@@ -226,12 +224,13 @@ export default function AudioBar2({ mainSong, listSongs, currentSong, setCurrent
 
 
                               {/* Repeat B  */}
-                              <div>
+                              
+                         </div>
+                         <div>
                                    <div onClick={RepeatToggle}>
                                         <Repeat size={maxIconSize} className={` ${repeat && " text-yellow-500"} hover:text-foreground/75`} />
                                    </div>
                               </div>
-                         </div>
 
                     </div>
 

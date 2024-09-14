@@ -4,6 +4,8 @@ import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { FileDetails, ToAudioDetails } from '@/lib/type'
+import { ImageOff } from 'lucide-react';
+
 import { toAudioAsBase64, toAudioAsBase64Z, toFileAsBase64 } from '@/lib/Bass64'
 import {
      Table,
@@ -16,6 +18,9 @@ import {
      TableRow,
 } from "@/components/ui/table"
 import AudioBar2 from '../Audio/AudioBar2'
+import { useToast } from '../ui/use-toast'
+import Image from 'next/image'
+
 type NEWSONG = {
      name: string;
      artist: string[];
@@ -29,6 +34,8 @@ type NEWSONG = {
 
 
 export default function NewSong() {
+     const { toast } = useToast()
+
      const AidioFileRef = useRef<HTMLInputElement | null>(null)
      const [songForm, setSongForm] = useState<NEWSONG>({
           name: "",
@@ -59,11 +66,26 @@ export default function NewSong() {
 
      function addNewArtist() {
           if (artist) {
-               setSongForm(preData => ({ ...preData, artist: [...preData.artist, artist] }))
-               setArtist("")
+               if (!songForm.artist.includes(artist)) {
+                    setSongForm(preData => ({ ...preData, artist: [...preData.artist, artist] }))
+
+               } else {
+                    toast({
+                         title: "Error ",
+                         variant: "destructive",
+                         description: "Artist already exists",
+                    })
+               }
+
           } else {
+               toast({
+                    title: "Error ",
+                    variant: "destructive",
+                    description: "please enter a artist",
+               })
 
           }
+          setArtist("")
 
 
      }
@@ -206,90 +228,126 @@ export default function NewSong() {
 
      return (
           <>
-               <div className=' flex flex-col gap-2 p-1 '>
-                    <div className=' w-[350px]'>
-                         <Label htmlFor='name'> Name</Label>
-                         <Input id='name' type="text" />
-                    </div>
 
-                    {/* This is the image for for the songs cover */}
-                    <div className=' flex flex-row items-center  w-[350px] '>
-                         <div>
-                              <Label htmlFor='cover'> cover</Label>
-                              <Input
-                                   id='cover'
-                                   type="file"
-                                   accept="image/*"
-                                   onChange={(e) => ImgFileHandle(e)}
-                              />
 
-                         </div>
-                         <Button>Preview image</Button>
 
-                    </div>
-
-                    {/* This is the songs artist featured */}
-                    <div className=' flex flex-col gap-1  w-[350px]'>
-                         <div className=' flex flex-row gap-1'>
-
-                              <div className=' w-[300px]'>
-                                   <Label htmlFor='artist'> Name</Label>
-                                   <Input id='artist' type="text" value={artist} onChange={(e => { setArtist(e.target.value) })} />
+               <div className=' flex flex-col gap-1'>
+                    <div className=' flex flex-row gap-2 p-1 '>
+                         {/* row 1 */}
+                         <div className=' flex flex-col gap-2'>
+                              <div className=' w-[350px]'>
+                                   <Label htmlFor='name'> Name</Label>
+                                   <Input id='name' type="text" />
                               </div>
 
-                              <div className=' flex items-end'>
-                                   <Button onClick={addNewArtist}>ADD</Button>
-                              </div>
+                              {/* This is the songs artist featured */}
+                              <div className=' flex flex-col gap-1  w-[350px]'>
+                                   <div className=' flex flex-row gap-1'>
 
-
-                         </div>
-
-                         <div className=' flex flex-row gap-2 flex-grow flex-wrap border border-input min-h-14 max-h-32 rounded-md p-[1px] overflow-y-scroll'>
-                              {songForm.artist.map((songArtist, index) => {
-                                   return (
-                                        <div key={songArtist + index} className=' bg-primary/85 rounded p-1 h-8 '>
-                                             <h2>{songArtist}</h2>
+                                        <div className=' w-[300px]'>
+                                             <Label htmlFor='artist'> artist</Label>
+                                             <Input id='artist' type="text" value={artist} onChange={(e => { setArtist(e.target.value) })} />
                                         </div>
-                                   )
-                              })}
+
+                                        <div className=' flex items-end'>
+                                             <Button onClick={addNewArtist}>ADD</Button>
+                                        </div>
+
+
+                                   </div>
+
+                                   <div className=' flex flex-row gap-1 p-1 flex-grow flex-wrap border border-input min-h-16 max-h-32 rounded-md  overflow-y-scroll'>
+                                        {songForm.artist.map((songArtist, index) => {
+                                             return (
+                                                  <div key={songArtist + index} className=' bg-primary/85 rounded p-1 h-8 '>
+                                                       <h2>{songArtist}</h2>
+                                                  </div>
+                                             )
+                                        })}
+                                   </div>
+
+
+                              </div>
+
+
+                              {/* Audio input */}
+                              <div className=' flex flex-col gap-1 rounded-b-sm   w-[350px]' >
+                                   <div className=' flex flex-row gap-1'>
+
+                                        <div className=' w-[300px]'>
+                                             <Label htmlFor='AudioInputs'> Add Audio</Label>
+                                             <Input
+                                                  ref={AidioFileRef}
+
+                                                  id='AudioInputs'
+                                                  type="file"
+                                                  accept="audio/mpeg3"
+                                                  onChange={(e) => AudioFileHandle(e)} />
+                                        </div>
+
+                                        <div className=' flex items-end'>
+                                             <Button onClick={UploadAudio}>ADD</Button>
+                                        </div>
+
+
+                                   </div>
+
+                              </div>
+
                          </div>
 
+                         {/* row 2 */}
+                         <div>
+                              {/* This is the image for for the songs cover */}
+                              <div className=' flex flex-col items-center gap-1  w-[350px] '>
+                                   <div>
+                                        <Label htmlFor='cover'> cover</Label>
+                                        <Input
+                                             id='cover'
+                                             type="file"
+                                             accept="image/*"
+                                             onChange={(e) => ImgFileHandle(e)}
+                                            
+                                        />
+
+                                   </div>
+                                   <div className='border border-input rounded w-[300px] h-60 flex items-center justify-center'>
+                                        {songForm.cover ?
+                                             (<Image
+                                                  width={900}
+                                                  height={900}
+                                                  src={songForm.cover.path}
+                                                  alt='cc' 
+                                                  className='object-contain w-full h-full'
+                                                  />
+                                             )
+                                             :
+                                             (<ImageOff
+                                                  className=' text-border'
+                                                  size={60} 
+                                                  />
+                                             )
+                                        }
+
+                                   </div>
+
+
+                              </div>
+
+
+
+                         </div>
 
                     </div>
 
 
-
-
-
-                    <div className=' flex flex-col gap-1 rounded-b-sm   w-[350px]' >
-                         <div className=' flex flex-row gap-1'>
-
-                              <div className=' w-[300px]'>
-                                   <Label htmlFor='artist'> Name</Label>
-                                   <Input
-                                        ref={AidioFileRef}
-
-                                        id='artist'
-                                        type="file"
-                                        accept="audio/mpeg3"
-                                        onChange={(e) => AudioFileHandle(e)} />
-                              </div>
-
-                              <div className=' flex items-end'>
-                                   <Button onClick={UploadAudio}>ADD</Button>
-                              </div>
-
-
-                         </div>
-
-
-
-
-                    </div>
                     <Button className=' w-80' onClick={sendEND}>Send</Button>
-
                </div>
 
+
+
+               {/* End */}
+               {/* Table of songs */}
                <div className=' flex flex-row flex-grow flex-wrap  border border-input'>
 
 
@@ -309,7 +367,7 @@ export default function NewSong() {
                          <TableBody>
                               {songForm.songs.map((songA, index) => {
                                    return (
-                                        <TableRow onClick={()=>SelectAudio(songA.id)} key={songA.id}>
+                                        <TableRow onClick={() => SelectAudio(songA.id)} key={songA.id}>
                                              <TableCell className="font-medium">{index + 1}</TableCell>
                                              <TableCell>
                                                   <Input id='nameS' type="text" value={songA.name} onChange={(e) => UpdateSongName(songA.id, e.target.value)} />
@@ -331,10 +389,10 @@ export default function NewSong() {
 
                </div>
                <AudioBar2
-               mainSong={mainSong}
-               listSongs={songForm.songs.length}
-               currentSong={currentSong}
-               setCurrentSong={setCurrentSong}
+                    mainSong={mainSong}
+                    listSongs={songForm.songs.length}
+                    currentSong={currentSong}
+                    setCurrentSong={setCurrentSong}
                />
 
 
