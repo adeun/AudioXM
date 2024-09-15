@@ -339,7 +339,7 @@ export default function NewSong() {
                          <div>
                               <div className=' w-[350px]'>
                                    <Label htmlFor='release_date'> release date</Label>
-                                   <Input id='release_date' value={songForm.release_date} type="datetime-local" onChange={(e) => setSongForm(predata => ({ ...predata, release_date: e.target.value }))} />
+                                   <Input id='release_date' value={songForm.release_date} type="date" onChange={(e) => setSongForm(predata => ({ ...predata, release_date: e.target.value }))} />
                               </div>
 
                               {/* This is the image for for the songs cover */}

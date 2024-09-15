@@ -25,7 +25,7 @@ export const AlbumUploadForm = z.object({
           type:  z.string(),
           size:  z.string(),
      }).nullable(),
-     release_date: z.string().datetime(),
+     release_date: z.string().date(),
      songs: z.array(z.object({
           id: z.string(),
           path: z.string(),
