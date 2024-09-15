@@ -22,12 +22,17 @@ import { useToast } from '../ui/use-toast'
 import Image from 'next/image'
 import { z } from 'zod'
 import { AlbumUploadForm } from '@/lib/ZOD'
+import { useMutation } from '@tanstack/react-query'
+import AddSong from '@/server/songAction/addSong'
 
 
 
 
 export default function NewSong() {
      const { toast } = useToast()
+     const  newAlbumMutation =  useMutation({
+          mutationFn:AddSong
+     })
 
      const AidioFileRef = useRef<HTMLInputElement | null>(null)
      const [songForm, setSongForm] = useState<z.infer<typeof AlbumUploadForm>>({
@@ -229,6 +234,7 @@ export default function NewSong() {
           } else {
                const albumStateData = albumState.data;
                if (albumStateData) {
+                    newAlbumMutation.mutate(albumStateData)
 
                }
           }
