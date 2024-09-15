@@ -4,7 +4,7 @@ import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { FileDetails, ToAudioDetails } from '@/lib/type'
-import { ImageOff } from 'lucide-react';
+import { ImageOff, LoaderCircle } from 'lucide-react';
 
 import { toAudioAsBase64, toAudioAsBase64Z, toFileAsBase64 } from '@/lib/Bass64'
 import {
@@ -30,8 +30,8 @@ import AddSong from '@/server/songAction/addSong'
 
 export default function NewSong() {
      const { toast } = useToast()
-     const  newAlbumMutation =  useMutation({
-          mutationFn:AddSong
+     const newAlbumMutation = useMutation({
+          mutationFn: AddSong
      })
 
      const AidioFileRef = useRef<HTMLInputElement | null>(null)
@@ -224,7 +224,7 @@ export default function NewSong() {
           const albumState = AlbumUploadForm.safeParse(songForm)
           const albumStateError = albumState.error?.errors
           if (albumStateError) {
-               albumStateError.forEach(err =>{
+               albumStateError.forEach(err => {
                     toast({
                          title: ` Error at ${err.path[0]}`,
                          description: err.message,
@@ -235,6 +235,27 @@ export default function NewSong() {
                const albumStateData = albumState.data;
                if (albumStateData) {
                     newAlbumMutation.mutate(albumStateData)
+
+                    setSongForm({
+                         name: "",
+                         artist: [],
+                         cover: null,
+                         release_date: "",
+                         songs: [],
+                    })
+                    setMainSong({
+                         path: "",
+                         duration: 0,
+                         name: "",
+                         id: "",
+
+                    })
+
+                    toast({
+                         title: "Album uploaded successfully",
+                         description: "Your album has been uploaded successfully",
+                         variant: "default",
+                    })
 
                }
           }
@@ -364,7 +385,7 @@ export default function NewSong() {
                     </div>
 
 
-                    <Button className=' w-80' onClick={sendEND}>Send</Button>
+                    <Button disabled ={newAlbumMutation.isPending} className=' w-80' onClick={UploadAlbum}>{newAlbumMutation.isPending &&<LoaderCircle className ="animate-spin" />} Upload album</Button>
                </div>
 
 
