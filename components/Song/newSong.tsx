@@ -276,7 +276,7 @@ export default function NewSong() {
                          <div className=' flex flex-col gap-2'>
                               <div className=' w-[350px]'>
                                    <Label htmlFor='name'> Name</Label>
-                                   <Input id='name' value={songForm.name} onChange={(e) => setSongForm(predata => ({ ...predata, release_date: e.target.value }))} type="text" />
+                                   <Input id='name' value={songForm.name} onChange={(e) => setSongForm(predata => ({ ...predata, name: e.target.value }))} type="text" />
                               </div>
 
                               {/* This is the songs artist featured */}
