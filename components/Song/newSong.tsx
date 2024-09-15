@@ -20,24 +20,17 @@ import {
 import AudioBar2 from '../Audio/AudioBar2'
 import { useToast } from '../ui/use-toast'
 import Image from 'next/image'
-
-type NEWSONG = {
-     name: string;
-     artist: string[];
-     cover: FileDetails | null;
-     release_date: string;
-     songs: ToAudioDetails[] | []
+import { z } from 'zod'
+import { AlbumUploadForm } from '@/lib/ZOD'
 
 
-
-}
 
 
 export default function NewSong() {
      const { toast } = useToast()
 
      const AidioFileRef = useRef<HTMLInputElement | null>(null)
-     const [songForm, setSongForm] = useState<NEWSONG>({
+     const [songForm, setSongForm] = useState<z.infer<typeof AlbumUploadForm>>({
           name: "",
           artist: [],
           cover: null,
@@ -222,6 +215,25 @@ export default function NewSong() {
           return `${minutes}:${seconds >= 10 ? seconds : "0" + seconds}`
 
      }
+     function UploadAlbum() {
+          const albumState = AlbumUploadForm.safeParse(songForm)
+          const albumStateError = albumState.error?.errors
+          if (albumStateError) {
+               albumStateError.forEach(err =>{
+                    toast({
+                         title: ` Error at ${err.path[0]}`,
+                         description: err.message,
+                    })
+               })
+               return
+          } else {
+               const albumStateData = albumState.data;
+               if (albumStateData) {
+
+               }
+          }
+
+     }
 
 
 
@@ -237,7 +249,7 @@ export default function NewSong() {
                          <div className=' flex flex-col gap-2'>
                               <div className=' w-[350px]'>
                                    <Label htmlFor='name'> Name</Label>
-                                   <Input id='name' type="text" />
+                                   <Input id='name' value={songForm.name} onChange={(e) => setSongForm(predata => ({ ...predata, release_date: e.target.value }))} type="text" />
                               </div>
 
                               {/* This is the songs artist featured */}
@@ -298,6 +310,11 @@ export default function NewSong() {
 
                          {/* row 2 */}
                          <div>
+                              <div className=' w-[350px]'>
+                                   <Label htmlFor='release_date'> release date</Label>
+                                   <Input id='release_date' value={songForm.release_date} type="datetime-local" onChange={(e) => setSongForm(predata => ({ ...predata, release_date: e.target.value }))} />
+                              </div>
+
                               {/* This is the image for for the songs cover */}
                               <div className=' flex flex-col items-center gap-1  w-[350px] '>
                                    <div>
@@ -307,7 +324,7 @@ export default function NewSong() {
                                              type="file"
                                              accept="image/*"
                                              onChange={(e) => ImgFileHandle(e)}
-                                            
+
                                         />
 
                                    </div>
@@ -317,15 +334,15 @@ export default function NewSong() {
                                                   width={900}
                                                   height={900}
                                                   src={songForm.cover.path}
-                                                  alt='cc' 
+                                                  alt='cc'
                                                   className='object-contain w-full h-full'
-                                                  />
+                                             />
                                              )
                                              :
                                              (<ImageOff
                                                   className=' text-border'
-                                                  size={60} 
-                                                  />
+                                                  size={60}
+                                             />
                                              )
                                         }
 
