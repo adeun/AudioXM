@@ -60,6 +60,79 @@ model VerificationToken {
   @@id([identifier, token])
 }
 
+model imgFile {
+  id        String    @id @default(cuid())
+  userId    String
+  imageUrl  String
+  name      String
+  typeLog   ImageType
+  size      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Album {
+  id           String       @id @default(cuid())
+  name         String
+  release_date String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  authorId     String
+  cover        AlbumImg?
+  songList     AudioFile[]
+  artistList   artistList[]
+}
+
+model AlbumImg {
+  id         String   @id @default(cuid())
+  imageUrl   String
+  name       String
+  type       String
+  size       String
+  albumId    String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  firebaseId String
+  album      Album    @relation(fields: [albumId], references: [id])
+}
+
+model artistList {
+  id      String @id @default(cuid())
+  name    String
+  albumId String
+  Album   Album  @relation(fields: [albumId], references: [id])
+}
+
+model AudioFile {
+  id         String    @id @default(cuid())
+  imageUrl   String
+  name       String
+  type       String
+  size       String
+  duration   Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  albumId    String
+  firebaseId String
+  Album      Album     @relation(fields: [albumId], references: [id])
+  AudioImg   AudioImg?
+}
+
+model AudioImg {
+  id        String    @id @default(cuid())
+  userId    String
+  imageUrl  String
+  name      String
+  type      String
+  size      String
+  duration  Int
+  authorId  String
+  AudioId   String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  AudioFile AudioFile @relation(fields: [AudioId], references: [id])
+}
+
 model Authenticator {
   credentialID         String  @unique
   userId               String
@@ -72,4 +145,9 @@ model Authenticator {
   user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+enum ImageType {
+  songImg
+  album
 }

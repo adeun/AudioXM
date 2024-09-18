@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, FirebaseError  } from "firebase/app";
 import { getStorage, ref, uploadString  ,deleteObject} from "firebase/storage";
+import {v4 as uuidv4} from 'uuid';
 
 import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -23,19 +24,24 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
 const storage = getStorage();
-const createStorageRef = (folderName: string) => ref(storage, folderName);
+const createStorageRef = (folderName: string ,uuuidNmae:string) => ref(storage, `${folderName}/&${uuuidNmae}`);
 
 
 
 
 
 export async function uploadBase64(path: string, folderName: "AudioFileStorage" | "ImageFileStorage") {
-     const storageRef = createStorageRef(folderName);
+     let newName = uuidv4();
 
-     return new Promise<string>((resolve, reject) => {
+     const storageRef = createStorageRef(folderName ,newName );
+
+     return new Promise<{url:string , id:string}>((resolve, reject) => {
           uploadString(storageRef, path, 'data_url').then((snapshot) => {
                console.log(`Uploaded a data_url string to ${folderName}!`);
-               resolve(snapshot.ref.fullPath);
+               resolve({
+                    url: snapshot.metadata.fullPath,
+                    id: snapshot.ref.name
+               });
           }).catch((error: FirebaseError) => {
                switch (error.code) {
                     case 'storage/unauthorized':

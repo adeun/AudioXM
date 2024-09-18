@@ -14,6 +14,7 @@ export function convertAudioToBase64(filePath: string): Promise<{ data: string, 
                          reader.onloadend = () => {
                               if (reader.result) {
                                    URL.revokeObjectURL(objectUrl)
+                                   
                                    resolve({
                                         data: reader.result as string,
                                         duration: audio.duration

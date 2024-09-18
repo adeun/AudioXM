@@ -21,6 +21,7 @@ import {
      TableHeader,
      TableRow,
 } from "@/components/ui/table"
+import AudioBar2 from './AudioBar2';
 
 export default function AudioView() {
      const [isMounted, setIsMounted] = useState(false);
@@ -33,6 +34,7 @@ export default function AudioView() {
           path: "",
           currentTime: 0,
           duration: 0,
+          id: ""
 
      });
 
@@ -90,7 +92,7 @@ export default function AudioView() {
                song
           });
           setCurrentSong(index);
-          setSongs(preData => ({ ...preData, path: song[0].path, name: song[0].name, duration: song[0].duration }))
+          setSongs(preData => ({ ...preData, path: song[0].path, name: song[0].name, duration: song[0].duration, id: song[0].id }))
           //setAutoPlay(true)
           setPlaySong(true)
 
@@ -184,14 +186,11 @@ export default function AudioView() {
                          
                          */}
 
-                         <AudioBar
-                              songs={songs}
-                              setSongs={setSongs}
+                         <AudioBar2
+                              mainSong={songs}
+                              listSongs={listSongs.length}
                               currentSong={currentSong}
                               setCurrentSong={setCurrentSong}
-                              listSongs={listSongs}
-                              setPlaySong={setPlaySong}
-                              playSong={playSong}
                          />
                     </div>
                </div>

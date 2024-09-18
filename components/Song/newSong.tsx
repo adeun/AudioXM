@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
@@ -24,11 +24,14 @@ import { z } from 'zod'
 import { AlbumUploadForm } from '@/lib/ZOD'
 import { useMutation } from '@tanstack/react-query'
 import AddSong from '@/server/songAction/addSong'
+import { Session } from 'next-auth'
 
 
 
 
-export default function NewSong() {
+export default function NewSong({session}:{session:Session}) {
+     const [isMounted, setIsMounted] = useState(false);
+
      const { toast } = useToast()
      const newAlbumMutation = useMutation({
           mutationFn: AddSong
@@ -52,6 +55,28 @@ export default function NewSong() {
 
      const [artist, setArtist] = useState("")
      const [fileLog, setFileLog] = useState<ToAudioDetails | null>(null)
+     // check if everything is mounted first
+     useEffect(() => {
+          // Simulate async task (e.g., fetching data, waiting for all components to mount)
+          const timer = setTimeout(() => {
+               setIsMounted(true);
+          }, 500); // Adjust time if needed
+
+          return () => clearTimeout(timer);
+     }, []);
+
+
+     if (!isMounted) {
+          return <div className=' flex-1 flex items-center justify-center'>
+               <LoaderCircle className=' animate-spin' size={78} />
+          </div>;
+     }
+
+    
+
+
+
+
      function SelectAudio(id: string) {
           const SA = songForm.songs.filter(song => song.id === id)
           setMainSong({
@@ -121,14 +146,8 @@ export default function NewSong() {
                if (formData.files) {
                     const A = Array.from(formData.files)
                     console.log(A);
-
                }
                console.log("value", formData.value);
-
-
-
-
-
           }
 
 
@@ -220,6 +239,7 @@ export default function NewSong() {
           return `${minutes}:${seconds >= 10 ? seconds : "0" + seconds}`
 
      }
+     // ! Uploading the album to the server to be uploaded to to the database
      function UploadAlbum() {
           const albumState = AlbumUploadForm.safeParse(songForm)
           const albumStateError = albumState.error?.errors
@@ -234,7 +254,7 @@ export default function NewSong() {
           } else {
                const albumStateData = albumState.data;
                if (albumStateData) {
-                    newAlbumMutation.mutate(albumStateData)
+                    newAlbumMutation.mutate({data: albumStateData , userId:session.user.id})
 
                     setSongForm({
                          name: "",
