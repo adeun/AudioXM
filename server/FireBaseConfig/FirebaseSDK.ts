@@ -1,14 +1,9 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp, FirebaseError  } from "firebase/app";
-import { getStorage, ref, uploadString  ,deleteObject} from "firebase/storage";
-import {v4 as uuidv4} from 'uuid';
+import { initializeApp, FirebaseError } from "firebase/app";
+import { getStorage, ref, uploadString, deleteObject, getDownloadURL } from "firebase/storage";
+import { v4 as uuidv4 } from 'uuid';
 
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Firebase configuration
 const firebaseConfig = {
      apiKey: "AIzaSyCAdI9k2DjrRhPOmKywaG7h4ZCeFeEzCRo",
      authDomain: "augx-8b4dd.firebaseapp.com",
@@ -21,73 +16,79 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 
-const storage = getStorage();
-const createStorageRef = (folderName: string ,uuuidNmae:string) => ref(storage, `${folderName}/&${uuuidNmae}`);
+// Initialize Storage
+const storage = getStorage(app);
 
+// Helper function to create a reference in the storage bucket
+const createStorageRef = (folderName: string, uuidName: string) => ref(storage, `${folderName}/${uuidName}`);
 
-
-
-
+// Function to upload a base64-encoded string to Firebase Storage
 export async function uploadBase64(path: string, folderName: "AudioFileStorage" | "ImageFileStorage") {
      let newName = uuidv4();
+     console.log("Uploading base64 file in Firebase");
 
-     const storageRef = createStorageRef(folderName ,newName );
+     const storageRef = createStorageRef(folderName, newName);
 
-     return new Promise<{url:string , id:string}>((resolve, reject) => {
+     return new Promise<{ url: string; id: string }>(async (resolve, reject) => {
           uploadString(storageRef, path, 'data_url').then((snapshot) => {
                console.log(`Uploaded a data_url string to ${folderName}!`);
-               resolve({
-                    url: snapshot.metadata.fullPath,
-                    id: snapshot.ref.name
-               });
-          }).catch((error: FirebaseError) => {
-               switch (error.code) {
-                    case 'storage/unauthorized':
-                         console.error('User does not have permission to access the object.');
-                         break;
-                    case 'storage/canceled':
-                         console.error('User canceled the upload.');
-                         break;
-                    case 'storage/unknown':
-                         console.error('Unknown error occurred:', error.message);
-                         break;
-                    default:
-                         console.error('An error occurred:', error.message);
+               // Get the download URL after the upload
+
+               try {
+                    getDownloadURL(snapshot.ref).then((downloadURL) => {
+                         resolve({
+                              url: downloadURL,
+                              id: snapshot.ref.name
+                         }); 
+                         console.log(`Download complete successfully downloaded from ${snapshot.ref.name} to ${folderName}!`);
+                         
+
+                    }).catch((error) =>{
+                         console.error("Error fetching download URL: ", error);
+                         reject(new Error(`Failed to get download URL: ${error.message}`));
+                    })
+
+
+               } catch (error) {
+                    console.error("Error fetching download URL: ", error);
+                    reject(new Error(`Failed to get download URL: ${error}`));
                }
-               reject(new Error(`Upload failed for ${folderName}: ${error.message}`));
-          })
 
-     })
-
+          }).catch((error: FirebaseError) => {
+               handleFirebaseError(error, folderName);
+               reject(new Error(`Upload failed for ${folderName}: ${error.message} at FirebaseSDK.ts`));
+          });
+     });
 }
 
-export function Delete( folderName: "AudioFileStorage" | "ImageFileStorage" , file:string ){
+// Function to delete a file from Firebase Storage
+export function Delete(folderName: "AudioFileStorage" | "ImageFileStorage", file: string) {
      const desertRef = ref(storage, `${folderName}/${file}`);
      return new Promise<boolean>((resolve, reject) => {
           deleteObject(desertRef).then(() => {
                console.log(`File ${file} deleted from ${folderName}`);
                resolve(true);
-          }).catch((error:FirebaseError) => {
-               switch (error.code) {
-                    case 'storage/unauthorized':
-                         console.error('User does not have permission to access the object.');
-                         break;
-                    case 'storage/canceled':
-                         console.error('User canceled the upload.');
-                         break;
-                    case 'storage/unknown':
-                         console.error('Unknown error occurred:', error.message);
-                         break;
-                    default:
-                         console.error('An error occurred:', error.message);
-               }
-               reject(new Error(`Upload failed for ${folderName}: ${error.message}`));
-          })
-     })
-
+          }).catch((error: FirebaseError) => {
+               handleFirebaseError(error, folderName);
+               reject(new Error(`Delete failed for ${folderName}: ${error.message}`));
+          });
+     });
 }
 
-
-
+// Helper function to handle Firebase errors
+function handleFirebaseError(error: FirebaseError, folderName: string) {
+     switch (error.code) {
+          // case 'storage/unauthorized':
+          //      console.error(`User does not have permission to access the object in ${folderName}.`);
+          //      break;
+          case 'storage/canceled':
+               console.error(`User canceled the upload/delete operation in ${folderName}.`);
+               break;
+          case 'storage/unknown':
+               console.error(`Unknown error occurred in ${folderName}: ${error.message}`);
+               break;
+          default:
+               console.error(`An error occurred in ${folderName}: ${error.message}`);
+     }
+}

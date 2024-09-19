@@ -8,7 +8,7 @@ import {
      DropdownMenuSeparator,
      DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ModeToggle } from './darkMode';
+import { ModeToggle } from '../darkMode';
 import { User } from 'next-auth';
 import LogOut from '@/server/authAction/LogOut';
 import { useMutation } from '@tanstack/react-query';
@@ -20,13 +20,7 @@ export default function Nav({user}:NavProps) {
      const LogoutM = useMutation({
           mutationFn:LogOut
      })
-     //  function Logout() {
-     //      console.log("logged out  from");
-          
-     //      LogOut()
-         
-          
-     // }
+     
      return (
           <div  className=' flex flex-row h-14 border-b-[1.5px]  border-primary' >
                {/* logo */}

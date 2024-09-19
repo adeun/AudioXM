@@ -128,21 +128,7 @@ export default function AudioView() {
                      */}
 
                     <div className=' flex flex-1 flex-col gap-2 p-1'>
-                         {/* {listSongs.map((song , index) => {
-                              return (
-                                   <AudioListCard
-                                        key={song.id}
-                                        id={song.id}
-                                        name={song.name}
-                                        img={song.path}
-                                        author={song.author}
-                                        SelectSong={SelectSong}
-                                        songsDuration={song.duration}
-                                        index={index + 1} 
-                                   />
-                              )
-
-                         })} */}
+                        
                          <Table className=' text-base'>
 
                               <TableHeader>

@@ -22,7 +22,6 @@ export default  middleware((req) => {
       const user = req.auth
      const isProtectedRoute = routes.Protection.some((pattern) => pattern.test(pathname));
      const isAuthRoute = routes.auth.some((pattern) => pattern.test(pathname));
-     console.log("user :", req.auth);
 
      if (isAuthRoute && user ){
           return NextResponse.redirect(new URL('/Home', req.nextUrl));

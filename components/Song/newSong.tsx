@@ -60,7 +60,7 @@ export default function NewSong({session}:{session:Session}) {
           // Simulate async task (e.g., fetching data, waiting for all components to mount)
           const timer = setTimeout(() => {
                setIsMounted(true);
-          }, 500); // Adjust time if needed
+          }, 300); // Adjust time if needed
 
           return () => clearTimeout(timer);
      }, []);

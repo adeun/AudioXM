@@ -1,9 +1,10 @@
 import AudioView from '@/components/Audio/AudioView'
-import Nav from '@/components/Nav'
+import Nav from '@/components/NavVersions/Nav'
 import React from 'react'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { auth } from '@/server/auth'
+import Album from '@/components/View/Album'
 export default async function page() {
   const Session = await auth()
   if (!Session) {
@@ -12,16 +13,16 @@ export default async function page() {
     
   }
   return (
-    <>
-    <Nav user={Session.user}/>
-    <main className=' flex-1 flex flex-row'>
+    
+   
+    <main className=' flex-1 flex flex-col'>
     
      
-          <AudioView/>
+          <Album user={Session}/>
      
      
     </main>
      
-    </>
+
   )
 }

@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Inter as FontSans } from "next/font/google"
+import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/toaster"
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 import ProviderQueryClient from "@/components/Provider/QueryClient";
 
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
-})
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,11 +23,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={fontSans.variable}>
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
+          "min-h-screen bg-background font-sans antialiased"
         )}
       >
         <ThemeProvider
@@ -36,17 +35,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main className=" flex flex-col min-h-screen ">
-            
-            <ProviderQueryClient>
-
-              {children}
-            </ProviderQueryClient>
-
+          <main className="flex flex-col min-h-screen">
+            <ProviderQueryClient>{children}</ProviderQueryClient>
           </main>
           <Toaster />
         </ThemeProvider>
-
       </body>
     </html>
   );

@@ -93,14 +93,14 @@ model AlbumImg {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   firebaseId String
-  album      Album    @relation(fields: [albumId], references: [id])
+  album      Album    @relation(fields: [albumId], references: [id], onDelete: Cascade)
 }
 
 model artistList {
   id      String @id @default(cuid())
   name    String
   albumId String
-  Album   Album  @relation(fields: [albumId], references: [id])
+  Album   Album  @relation(fields: [albumId], references: [id], onDelete: Cascade)
 }
 
 model AudioFile {
@@ -114,7 +114,7 @@ model AudioFile {
   updatedAt  DateTime  @updatedAt
   albumId    String
   firebaseId String
-  Album      Album     @relation(fields: [albumId], references: [id])
+  Album      Album     @relation(fields: [albumId], references: [id], onDelete: Cascade)
   AudioImg   AudioImg?
 }
 
@@ -130,7 +130,7 @@ model AudioImg {
   AudioId   String    @unique
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  AudioFile AudioFile @relation(fields: [AudioId], references: [id])
+  AudioFile AudioFile @relation(fields: [AudioId], references: [id], onDelete: Cascade)
 }
 
 model Authenticator {

@@ -10,6 +10,8 @@ type Audon = {
 export default async function AddSong({ data, userId }: { data: z.infer<typeof AlbumUploadForm>, userId: string, }) {
 
      try {
+          console.log("Uploading base64 file  in  firebase Server action");
+
           let imgUrl: { url: string; id: string; } | null = null;
           if (data.cover) {
                imgUrl = await uploadBase64(data.cover?.path, "ImageFileStorage")

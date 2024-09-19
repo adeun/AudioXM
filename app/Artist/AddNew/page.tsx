@@ -1,4 +1,4 @@
-import Nav from '@/components/Nav'
+import Nav from '@/components/NavVersions/Nav'
 import NewSong from '@/components/Song/newSong'
 import { auth } from '@/server/auth'
 import { redirect } from 'next/navigation'
