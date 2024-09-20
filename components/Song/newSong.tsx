@@ -454,7 +454,7 @@ export default function NewSong({session}:{session:Session}) {
                </div>
                <AudioBar2
                     mainSong={mainSong}
-                    listSongs={songForm.songs.length}
+                    PlaylistLength={songForm.songs?.length ? songForm.songs?.length  : null}
                     currentSong={currentSong}
                     setCurrentSong={setCurrentSong}
                />

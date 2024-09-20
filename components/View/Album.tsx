@@ -1,4 +1,14 @@
 "use client";
+import {
+     Table,
+     TableBody,
+     TableCaption,
+     TableCell,
+     TableHead,
+     TableHeader,
+     TableRow,
+} from "@/components/ui/table"
+import { Image as ImageLogo } from 'lucide-react';
 
 import { Session } from 'next-auth'
 import React, { useState, useEffect, useCallback } from 'react'
@@ -8,6 +18,7 @@ import Image from 'next/image';
 import DiscoverRouteV from '@/server/songAction/discoverInfo';
 import GetAlbumAll from '@/server/songAction/getAlbumAll';
 import FindAlbum from '@/server/songAction/FindAlbum';
+import AudioBar2 from "../Audio/AudioBar2";
 type Component = {
      user: Session
 }
@@ -43,12 +54,12 @@ type Track = {
      songList: {
           id: string;
           name: string;
-          imageUrl: string;
+          audioUrl: string;
           type: string;
           duration: number;
           size: string;
           firebaseId: string;
-     }[];
+     }[],
 } | null
 
 type songList = {
@@ -84,6 +95,7 @@ export default function Album({ user }: Component) {
      const [search, setSearch] = useState("");
      const [activeView, setActiveView] = useState<"AlbumView" | "DiscoverView">("DiscoverView");
      const [mainAlbum, setMainAlbum] = useState<Track>(null)
+     const [currentSong, setCurrentSong] = useState(0)
 
      const [activeSong, setActiveSong] = useState({
           name: "",
@@ -93,26 +105,56 @@ export default function Album({ user }: Component) {
           id: ""
 
      });
+     // after nutrition is complete check if we have valid data, then set the valid data and also switch the view
      useEffect(() => {
           if (getAlbum.data) {
                const mainAudio = getAlbum.data
-                    setMainAlbum(mainAudio)
-                    setActiveView("AlbumView")
+               setMainAlbum(mainAudio)
+               setActiveView("AlbumView")
 
 
-          }else{
+          } else {
                setMainAlbum(null)
           }
      }, [getAlbum.data])
-     console.log(mainAlbum);
-     
+     // This allows the audio player to switch between different songs using the in
+     useEffect(() => {
+          if (mainAlbum) {
+               const playlist = mainAlbum?.songList
+               if (playlist ) {
+                    setActiveSong({
+                         name: playlist[currentSong].name,
+                         path: playlist[currentSong].audioUrl,
+                         currentTime: 0,
+                         duration: playlist[currentSong].duration,
+                         id: playlist[currentSong].id
+                    })
+               }
+          }
+     },[currentSong , mainAlbum])
 
 
 
 
+     // Get the album that was correct in the discovery part
      function openAlbum(id: string) {
           getAlbum.mutate({ albumId: id });
 
+     }
+     // select a song from the album
+     function SelectSong(id: string) {
+          const playlist = mainAlbum?.songList
+          if (playlist) {
+               const song = playlist.filter(song => song.id === id)
+               setActiveSong({
+                    name: song[0].name,
+                    path: song[0].audioUrl,
+                    currentTime: 0,
+                    duration: song[0].duration,
+                    id: song[0].id
+               })
+
+          }
 
 
      }
@@ -134,17 +176,35 @@ export default function Album({ user }: Component) {
                               <div className=' flex flex-col flex-1 gap-1 bg-slate-500 overflow-y-scroll'>
                                    {/* Album header */}
                                    <div className=' relative h-[25%] bg-red-100'>
-                                        <div className=' h-full      flex flex-row blur-sm  bg-primary/50  '>
+                                        <div className=' h-full 0verflow-clip      flex flex-row blur-sm  bg-primary/50  '>
+                                             {mainAlbum.cover && (
+                                                  <Image
+                                                       className=' h-full w-full'
+                                                       src={mainAlbum.cover.imageUrl}
+                                                       alt='Album cover'
+                                                       width={900}
+                                                       height={900}
+                                                  />
+                                             )}
 
 
 
                                         </div>
-                                        <div className='z-50 absolute flex flex-row items-center justify-center top-0  w-full h-full  '>
+                                        <div className='z-50 absolute flex flex-row items-center  top-0  w-full h-full  '>
                                              {/* the img  */}
                                              <div className=' h-40 w-40 rounded border border-primary' >
+                                                  {mainAlbum.cover && (
+                                                       <Image
+                                                            className=' h-full w-full'
+                                                            src={mainAlbum.cover.imageUrl}
+                                                            alt='Album cover'
+                                                            width={900}
+                                                       height={900}
+                                                       />
+                                                  )}
 
                                              </div>
-                                             <h1></h1>
+                                             <h1>{mainAlbum.name}</h1>
 
                                         </div>
 
@@ -153,6 +213,52 @@ export default function Album({ user }: Component) {
                                    {/* Album songs */}
 
                                    <div className=' flex-1 bg-amber-400'>
+                                        <Table>
+                                             <TableCaption>A list of your recent invoices.</TableCaption>
+                                             <TableHeader>
+                                                  <TableRow>
+                                                       <TableHead className="w-[50px]">#</TableHead>
+                                                       <TableHead>name</TableHead>
+                                                       <TableHead>Artist</TableHead>
+                                                       <TableHead>Duration</TableHead>
+                                                  </TableRow>
+                                             </TableHeader>
+                                             <TableBody>
+                                                  {/* Album songs */}
+                                                  {mainAlbum.songList.map((song, index) => {
+                                                       return (
+                                                            <TableRow key={song.id} onClick={() => SelectSong(song.id)}>
+                                                                 <TableCell>{index + 1}</TableCell>
+                                                                 {/* The song name and image and artist */}
+                                                                 <TableCell className=" flex flex-row gap-1">
+                                                                      <div className=" rounded-md overflow-clip h-12 w-12 flex items-center justify-center">
+                                                                           <ImageLogo />
+
+                                                                      </div>
+                                                                      <h1>{song.name}</h1>
+
+                                                                 </TableCell>
+                                                                 {/* Arches contributed */}
+                                                                 <TableCell className=" flex flex-row gap-1 items-center justify-center">
+                                                                      {mainAlbum.artistList.map((artist, index, list) => {
+                                                                           const end = list.length - 1
+                                                                           return (
+                                                                                <div key={artist.name} className=" flex flex-row p-1">
+                                                                                     <p>{artist.name}</p>
+                                                                                     {index !== end && <p>, </p>}
+
+                                                                                </div>
+                                                                           )
+                                                                      })}
+
+
+                                                                 </TableCell>
+                                                                 <TableCell>{song.duration}</TableCell>
+                                                            </TableRow>
+                                                       )
+                                                  })}
+                                             </TableBody>
+                                        </Table>
 
                                    </div>
 
@@ -205,6 +311,15 @@ export default function Album({ user }: Component) {
                     </main>
 
                </>}
+
+               <AudioBar2
+               setCurrentSong={setCurrentSong}
+               currentSong={currentSong}
+               mainSong={activeSong}
+               PlaylistLength={mainAlbum?.songList.length ? mainAlbum?.songList.length :null}
+               
+               
+               />
 
 
 

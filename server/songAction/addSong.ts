@@ -25,7 +25,7 @@ export default async function AddSong({ data, userId }: { data: z.infer<typeof A
                     size: item.size,
                     duration: item.duration,
                     firebaseId: firebase.id,
-                    imageUrl:firebase.url
+                    audioUrl:firebase.url
 
                }
           }))

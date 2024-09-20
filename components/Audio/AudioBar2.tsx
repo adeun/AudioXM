@@ -17,11 +17,11 @@ type props = {
           id: string;
 
      },
-     listSongs: number,
+     PlaylistLength: number | null,
      currentSong: number,
      setCurrentSong: React.Dispatch<React.SetStateAction<number>>,
 }
-export default function AudioBar2({ mainSong, listSongs, currentSong, setCurrentSong }: props) {
+export default function AudioBar2({ mainSong, PlaylistLength, currentSong, setCurrentSong }: props) {
      const audioRef = useRef<HTMLAudioElement>(null);
      const [isPlaying, setIsPlaying] = useState(false);
      const maxIconSize = 33
@@ -89,13 +89,13 @@ export default function AudioBar2({ mainSong, listSongs, currentSong, setCurrent
 
      }
      function forward() {
-          if (currentSong === (listSongs)) {
+          if (PlaylistLength && currentSong === (PlaylistLength)) {
                console.log("End of the list");
                setCurrentSong(0);
                setIsPlaying(false)
                return
           }
-          if (currentSong < (listSongs)) {
+          if ( PlaylistLength && currentSong < (PlaylistLength)) {
                setCurrentSong(currentSong + 1);
           }
 

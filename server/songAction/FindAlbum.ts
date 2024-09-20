@@ -26,7 +26,7 @@ export default async function FindAlbum({albumId}:{albumId:string}) {
                               duration: true,
                               size: true,
                               firebaseId: true,
-                              imageUrl: true,
+                              audioUrl: true,
                               id: true
                          }
  

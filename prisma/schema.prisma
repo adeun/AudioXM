@@ -105,7 +105,7 @@ model artistList {
 
 model AudioFile {
   id         String    @id @default(cuid())
-  imageUrl   String
+  audioUrl   String
   name       String
   type       String
   size       String
