@@ -1,5 +1,8 @@
+
+
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
+import { Input } from '../ui/input'
 import {
      DropdownMenu,
      DropdownMenuContent,
@@ -9,35 +12,61 @@ import {
      DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ModeToggle } from '../darkMode';
-import { User } from 'next-auth';
+import { Session, User } from 'next-auth';
 import LogOut from '@/server/authAction/LogOut';
 import { useMutation } from '@tanstack/react-query';
 import { LoaderCircle } from 'lucide-react';
-type NavProps = {
-     user:User
+import { Label } from '../ui/label';
+type Props = {
+     user: Session,
+     Search: {
+          searchValue: string;
+          setSearchValue: React.Dispatch<React.SetStateAction<string>>
+     } | null,
+
 }
-export default function Nav({user}:NavProps) {
+export default function Nav2({ user, Search }: Props) {
+     const [hideLabe, setHideLabe] = useState(true);
      const LogoutM = useMutation({
-          mutationFn:LogOut
+          mutationFn: LogOut
      })
-     
      return (
-          <div  className=' flex flex-row h-14 border-b-[1.5px]  border-primary' >
-               {/* logo */}
-               <div className=' flex items-center justify-center overflow-clip'>
-                    <div className=''>
-                         <StarLogo />
-                    </div>
+          <div className=' flex flex-row  h-16 border-b-[1.5px]  border-primary'>
+               {/* logo div  */}
+               <div className='flex flex-row justify-center items-center object-fill'>
+                    <ModernLogo />
 
                </div>
-               {/* navigation links */}
-               <div className=' flex flex-row flex-1'>
+               {/* navigation links  and input  */}
+               <div className=' flex flex-row justify-center items-center flex-1'>
+
+                    {Search && (
+                         <div className=' p-1'>
+                           
+                              <Input
+                                   value={Search.searchValue}
+                                   onChange={(e) => Search.setSearchValue(e.target.value)}
+                                   id='Search'
+                                   onBlur={() => {
+
+                                   }}
+                                   onFocus={() => {
+
+                                   }}
+                                   className=' w-[285px] '
+                                   placeholder='Search'
+
+                              />
+
+                         </div>
+                    )}
+
 
                </div>
-               {/* user profile dropdown  theme*/}
-               <div className=' flex flex-row gap-1 items-center'>
+               {/* user profile dropdown  and  dark mode  */}
+               <div className='flex flex-row gap-2 items-center justify-center'>
                     <DropdownMenu>
-                         <DropdownMenuTrigger>{user.name}</DropdownMenuTrigger>
+                         <DropdownMenuTrigger>{user.user.name}</DropdownMenuTrigger>
                          <DropdownMenuContent>
                               <DropdownMenuLabel>My Account</DropdownMenuLabel>
                               <DropdownMenuSeparator />
@@ -45,10 +74,11 @@ export default function Nav({user}:NavProps) {
                               <DropdownMenuItem>Billing</DropdownMenuItem>
                               <DropdownMenuItem>Team</DropdownMenuItem>
                               <DropdownMenuItem>Subscription</DropdownMenuItem>
-                              <DropdownMenuItem className='bg-destructive text-destructive-foreground hover:bg-destructive/90' onClick={()=>LogoutM.mutate()} > {LogoutM.isPending && <LoaderCircle className=' animate-spin' />} logout</DropdownMenuItem>
+                              <DropdownMenuItem className='bg-destructive text-destructive-foreground hover:bg-destructive/90' onClick={() => LogoutM.mutate()} > {LogoutM.isPending && <LoaderCircle className=' animate-spin' />} logout</DropdownMenuItem>
                          </DropdownMenuContent>
                     </DropdownMenu>
-                    <ModeToggle/>
+                    <ModeToggle />
+
 
 
                </div>
@@ -56,28 +86,52 @@ export default function Nav({user}:NavProps) {
           </div>
      )
 }
-
-const StarLogo = () => {
+const ModernLogo = () => {
      return (
           <svg
                xmlns="http://www.w3.org/2000/svg"
                viewBox="0 0 100 100"
-               width="200"
-               height="200"
+               width="60"
+               height="60"
           >
-               {/* Star */}
-               <polygon
-                    points="50,15 61,39 88,39 66,57 72,84 50,68 28,84 34,57 12,39 39,39"
-                    className="fill-white stroke-black stroke-2"
+               {/* Outer Circle */}
+               <circle
+                    cx="50"
+                    cy="50"
+                    r="45"
+                    stroke="#333"
+                    strokeWidth="4"
+                    fill="none"
                />
 
-               {/* Red line going across */}
+               {/* Inner square rotated 45 degrees */}
+               <rect
+                    x="30"
+                    y="30"
+                    width="40"
+                    height="40"
+                    fill="#4CAF50"
+                    transform="rotate(45 50 50)"
+               />
+
+               {/* Vertical Line */}
                <line
-                    x1="10"
+                    x1="50"
+                    y1="20"
+                    x2="50"
+                    y2="80"
+                    stroke="#333"
+                    strokeWidth="4"
+               />
+
+               {/* Horizontal Line */}
+               <line
+                    x1="20"
                     y1="50"
-                    x2="90"
+                    x2="80"
                     y2="50"
-                    className="stroke-red-500 stroke-[5] bg-primary text-primary-foreground shadow hover:bg-primary/90"
+                    stroke="#333"
+                    strokeWidth="4"
                />
           </svg>
      );

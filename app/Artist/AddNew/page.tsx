@@ -1,9 +1,9 @@
-import Nav from '@/components/NavVersions/Nav'
-import NewSong from '@/components/Song/newSong'
+
 import { auth } from '@/server/auth'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import React from 'react'
+import AddNewSongPage from '@/components/page/addNewSong'
 
 export default async function page() {
 
@@ -20,7 +20,7 @@ export default async function page() {
 
         {/* Song list */}
 
-        <NewSong session={Session} />
+        <AddNewSongPage session={Session} />
 
 
 

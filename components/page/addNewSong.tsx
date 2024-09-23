@@ -29,7 +29,7 @@ import { Session } from 'next-auth'
 
 
 
-export default function NewSong({session}:{session:Session}) {
+export default function AddNewSongPage({session}:{session:Session}) {
      const [isMounted, setIsMounted] = useState(false);
 
      const { toast } = useToast()
