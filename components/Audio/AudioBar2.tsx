@@ -79,6 +79,7 @@ export default function AudioBar2({ mainSong, PlaylistLength, currentSong, setCu
                          if (audio.currentTime < (audio.duration / 3)) { // If contract is 1/3 of the full length, go to last song
 
                               setCurrentSong(currentSong - 1);
+                              setRawTime(0)
 
                          } else {
                               audio.currentTime = 0
@@ -112,6 +113,7 @@ export default function AudioBar2({ mainSong, PlaylistLength, currentSong, setCu
                setIsPlaying(true);
                setAutoPlay(true);
           }
+          setRawTime(0)
 
      }
      function PlayButton() {
