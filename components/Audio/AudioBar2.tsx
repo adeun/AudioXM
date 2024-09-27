@@ -28,33 +28,43 @@ export default function AudioBar2({ mainSong, PlaylistLength, currentSong, setCu
      const iconSizeNmw = Array.from(mainSong.name)
      const [currentTime, setCurrentTime] = useState("0:00");
      const [rawTime, setRawTime] = useState(0)
-     
+
 
      const [autoPlay, setAutoPlay] = useState(false);
 
      const [shuffle, setShuffle] = useState(false);
      const [repeat, setRepeat] = useState(false);
 
-     useEffect (()=>{
-          if (mainSong.path){
+     useEffect(() => {
+          if (mainSong.path) {
+               if (audioRef.current && isPlaying){
+                    const audio = audioRef.current
+                    audio.src = mainSong.path;
+                    audio.currentTime =rawTime;
+                    
+               }
+               
+          }
+
+     }, [mainSong  , isPlaying ])
+
+     /* If this song isplaying The pause button  will show , If this song is not playing the play button Will show */
+
+     function play() { //   ||   = true
+          if (audioRef.current) {
+               audioRef.current.play();
+               setIsPlaying(false);
+          }
+          if (!autoPlay){
+               setAutoPlay(true);
+          }
+     }
+     function pause() { // > By default == false
+          if (audioRef.current) {
+               audioRef.current.pause();
                setIsPlaying(true);
           }
-         
-
-
-     },[mainSong])
-     useEffect(() => { // Pause the song or play the song
-         
-               if (audioRef.current) {
-                    if (isPlaying) {
-                         audioRef.current.play();
-                    } else {
-                         audioRef.current.pause();
-                    }
-               }
-          
-          
-     }, [isPlaying])
+     }
 
 
 
@@ -66,7 +76,7 @@ export default function AudioBar2({ mainSong, PlaylistLength, currentSong, setCu
                if (mainSong.path && mainSong.duration) {
                     if (audioRef.current) {
                          const audio = audioRef.current
-                         if (audio.currentTime < (audio.duration / 3)) {
+                         if (audio.currentTime < (audio.duration / 3)) { // If contract is 1/3 of the full length, go to last song
 
                               setCurrentSong(currentSong - 1);
 
@@ -77,6 +87,8 @@ export default function AudioBar2({ mainSong, PlaylistLength, currentSong, setCu
                     } else {
                          console.error("audio ref not found");
                     }
+                    setAutoPlay(true);
+                    setIsPlaying(true);
 
                }
 
@@ -85,18 +97,20 @@ export default function AudioBar2({ mainSong, PlaylistLength, currentSong, setCu
                     const audio = audioRef.current
                     audio.currentTime = 0
                }
+               setAutoPlay(true);
           }
 
      }
      function forward() {
           if (PlaylistLength && currentSong === (PlaylistLength)) {
                console.log("End of the list");
-               setCurrentSong(0);
                setIsPlaying(false)
                return
           }
-          if ( PlaylistLength && currentSong < (PlaylistLength)) {
+          if (PlaylistLength && currentSong < (PlaylistLength)) {
                setCurrentSong(currentSong + 1);
+               setIsPlaying(true);
+               setAutoPlay(true);
           }
 
      }
@@ -112,7 +126,7 @@ export default function AudioBar2({ mainSong, PlaylistLength, currentSong, setCu
                const seconds = Math.floor(audio.currentTime % 60); // Calculate seconds
                setRawTime(audio.currentTime)
                setCurrentTime(`${minutes}:${seconds >= 10 ? seconds : "0" + seconds}`)
-               
+
 
           }
      }
@@ -140,7 +154,7 @@ export default function AudioBar2({ mainSong, PlaylistLength, currentSong, setCu
           setRepeat(!repeat);
           setShuffle(false)
      }
-     
+
 
 
      return (
@@ -148,9 +162,9 @@ export default function AudioBar2({ mainSong, PlaylistLength, currentSong, setCu
           <div className=' flex flex-row gap-1 w-[50%] h-[80px]   p-1 '>
                <audio
                     ref={audioRef}
-                    src={mainSong.path}
+                    
                     onTimeUpdate={onTimeUpdate}
-                    autoPlay={true}
+                    autoPlay={autoPlay}
                     onError={() => console.error('Error loading audio file')}
                     onCanPlayThrough={() => console.log('Audio file can play')}
                     onEnded={() => {
@@ -211,10 +225,18 @@ export default function AudioBar2({ mainSong, PlaylistLength, currentSong, setCu
 
                               {/* Play/pause button */}
                               <div onClick={PlayButton}>
+                                   {/* If this song is playing, we will see the button this is not */}
                                    {isPlaying ?
-                                        <Play className={`  hover:text-foreground/75`} size={maxIconSize} />
+                                        <div>
+                                             <Pause onClick={() => pause()} className={`  hover:text-foreground/75`} size={maxIconSize} />
+
+                                        </div>
                                         :
-                                        <Pause className={`  hover:text-foreground/75`} size={maxIconSize} />}
+                                        <div>
+                                             <Play onClick={() => play()} className={`  hover:text-foreground/75`} size={maxIconSize} />
+
+                                        </div>
+                                   }
                               </div>
 
                               {/* forward button */}
@@ -224,13 +246,13 @@ export default function AudioBar2({ mainSong, PlaylistLength, currentSong, setCu
 
 
                               {/* Repeat B  */}
-                              
+
                          </div>
                          <div>
-                                   <div onClick={RepeatToggle}>
-                                        <Repeat size={maxIconSize} className={` ${repeat && " text-yellow-500"} hover:text-foreground/75`} />
-                                   </div>
+                              <div onClick={RepeatToggle}>
+                                   <Repeat size={maxIconSize} className={` ${repeat && " text-yellow-500"} hover:text-foreground/75`} />
                               </div>
+                         </div>
 
                     </div>
 

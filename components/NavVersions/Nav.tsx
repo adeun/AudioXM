@@ -3,6 +3,8 @@
 "use client"
 import React, { useState } from 'react'
 import { Input } from '../ui/input'
+import { useRouter } from 'next/navigation'
+
 import {
      DropdownMenu,
      DropdownMenuContent,
@@ -17,8 +19,9 @@ import LogOut from '@/server/authAction/LogOut';
 import { useMutation } from '@tanstack/react-query';
 import { LoaderCircle } from 'lucide-react';
 import { Label } from '../ui/label';
+import { Button } from '../ui/button';
 type Props = {
-     user: Session,
+     user: Session | null,
      Search: {
           searchValue: string;
           setSearchValue: React.Dispatch<React.SetStateAction<string>>
@@ -30,6 +33,8 @@ export default function Nav2({ user, Search }: Props) {
      const LogoutM = useMutation({
           mutationFn: LogOut
      })
+     const router = useRouter()
+
      return (
           <div className=' flex flex-row  h-16 border-b-[1.5px]  border-primary'>
                {/* logo div  */}
@@ -42,7 +47,7 @@ export default function Nav2({ user, Search }: Props) {
 
                     {Search && (
                          <div className=' p-1'>
-                           
+
                               <Input
                                    value={Search.searchValue}
                                    onChange={(e) => Search.setSearchValue(e.target.value)}
@@ -64,20 +69,32 @@ export default function Nav2({ user, Search }: Props) {
 
                </div>
                {/* user profile dropdown  and  dark mode  */}
+
                <div className='flex flex-row gap-2 items-center justify-center'>
-                    <DropdownMenu>
-                         <DropdownMenuTrigger>{user.user.name}</DropdownMenuTrigger>
-                         <DropdownMenuContent>
-                              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem>Profile</DropdownMenuItem>
-                              <DropdownMenuItem>Billing</DropdownMenuItem>
-                              <DropdownMenuItem>Team</DropdownMenuItem>
-                              <DropdownMenuItem>Subscription</DropdownMenuItem>
-                              <DropdownMenuItem className='bg-destructive text-destructive-foreground hover:bg-destructive/90' onClick={() => LogoutM.mutate()} > {LogoutM.isPending && <LoaderCircle className=' animate-spin' />} logout</DropdownMenuItem>
-                         </DropdownMenuContent>
-                    </DropdownMenu>
-                    <ModeToggle />
+
+
+                    {user ?
+                         (<>
+                              <DropdownMenu>
+                                   <DropdownMenuTrigger>{user.user.name}</DropdownMenuTrigger>
+                                   <DropdownMenuContent>
+                                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem>Profile</DropdownMenuItem>
+                                        <DropdownMenuItem>Billing</DropdownMenuItem>
+                                        <DropdownMenuItem>Team</DropdownMenuItem>
+                                        <DropdownMenuItem>Subscription</DropdownMenuItem>
+                                        <DropdownMenuItem className='bg-destructive text-destructive-foreground hover:bg-destructive/90' onClick={() => LogoutM.mutate()} > {LogoutM.isPending && <LoaderCircle className=' animate-spin' />} logout</DropdownMenuItem>
+                                   </DropdownMenuContent>
+                              </DropdownMenu>
+                              <ModeToggle />
+                         </>)
+                         : (<>
+                         <Button onClick={()=> router.push("/")}>Login</Button>
+                         </>)
+
+                    }
+
 
 
 

@@ -3,7 +3,7 @@ import React from 'react'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { auth } from '@/server/auth'
-import RootPage from '@/components/page/RootPage'
+import DiscoverView from '@/components/page/DiscoverView'
 export default async function page() {
   const Session = await auth()
   if (!Session) {
@@ -17,7 +17,7 @@ export default async function page() {
     <main className=' flex-1 flex flex-col'>
     
      
-          <RootPage user={Session}/>
+          <DiscoverView user={Session}/>
      
      
     </main>
