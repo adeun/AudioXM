@@ -60,7 +60,7 @@ export default function PlayListPage({ album }: props) {
                          const data = imageData.data;
                          if (data) {
                               let redSum = 0, greenSum = 0, blueSum = 0;
-                              const pixelCount = data.length / 3; // Each pixel has 4 values (R, G, B, A)
+                              const pixelCount = data.length / 4; // Each pixel has 4 values (R, G, B, A)
 
                               // Loop through every pixel (4 values per pixel: R, G, B, A)
                               for (let i = 0; i < data.length; i += 4) {

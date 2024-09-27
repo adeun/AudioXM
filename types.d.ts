@@ -3,19 +3,19 @@ import NextAuth, { type DefaultSession } from "next-auth"
 import { AdapterUser } from "@auth/core/adapters"
 
 declare module "@auth/core/adapters" {
-  interface AdapterUser extends Omit<AdapterUser, "id"> {
-    id: string
-    role: string
-  }
+     interface AdapterUser extends Omit<AdapterUser, "id"> {
+          id: string
+          role: string
+     }
 }
 declare module "next-auth" {
      /**
       * The shape of the user object returned in the OAuth providers' `profile` callback,
       * or the second parameter of the `session` callback, when using a database.
       */
-     interface User { 
+     interface User {
           id: string,
-         
+
      }
      /**
       * The shape of the account object returned in the OAuth providers' `account` callback,
@@ -28,7 +28,7 @@ declare module "next-auth" {
       */
      interface Session {
           user: {
-              
+
                id: string,
 
 
@@ -42,11 +42,11 @@ import { JWT } from "next-auth/jwt"
 declare module "next-auth/jwt" {
      /** Returned by the `jwt` callback and `auth`, when using JWT sessions */
      interface JWT {
-          
+
           /** OpenID ID Token */
-         
+
           id: string,
-          email:string
+          email: string
           idToken?: string
      }
 }
