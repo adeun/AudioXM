@@ -10,7 +10,7 @@ export default async function NotFound() {
 
      return (
           <div className=' flex flex-1 items-center justify-center'>
-               <h2 className=' text-3xl'> <ShieldAlert className=' text-red-600' /> Album Not Found <ShieldAlert className=' text-red-600' /></h2>
+               <h2 className=' text-3xl flex flex-col gap-1'> <ShieldAlert className=' text-red-600' /> Album Not Found <ShieldAlert className=' text-red-600' /></h2>
 
                <p className=' text-lg'>Could not find requested resource</p>
 

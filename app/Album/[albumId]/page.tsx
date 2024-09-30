@@ -16,7 +16,7 @@ export default async function page({ params }: { params: { albumId: string } }) 
       <>
         <main className=' flex flex-col gap-2 flex-1 items-center justify-center'>
           
-          <h2 className=' text-3xl'> <ShieldAlert className=' text-red-600' /> Album Not Found <ShieldAlert className=' text-red-600' /></h2>
+          <h2 className=' text-3xl'> <ShieldAlert className=' text-red-600 flex-col gap-1' /> Album Not Found <ShieldAlert className=' text-red-600' /></h2>
           <p className=' text-lg'>The album you are looking for does not exist.</p>
 
           <Link className=' text-xl' href="/Home">
