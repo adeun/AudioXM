@@ -9,9 +9,13 @@ export default async function NotFound() {
      console.log(`Domain: ${domain}`)
 
      return (
-          <div className=' flex flex-1 items-center justify-center'>
-               <h2 className=' text-3xl flex flex-col gap-1'> <ShieldAlert className=' text-red-600' /> Album Not Found <ShieldAlert className=' text-red-600' /></h2>
+          <div className=' flex flex-row flex-1 items-center justify-center'>
+<div className='flex-col gap-1'>
+            <ShieldAlert className=' text-red-600 text-3xl ' />
+            <h2 className=' text-3xl'>  Album Not Found </h2>
+            <ShieldAlert className=' text-red-600 text-3xl ' />
 
+          </div>
                <p className=' text-lg'>Could not find requested resource</p>
 
                <Link className=' text-xl' href="/Home">

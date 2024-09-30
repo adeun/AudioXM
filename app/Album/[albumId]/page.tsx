@@ -14,9 +14,14 @@ export default async function page({ params }: { params: { albumId: string } }) 
   if (!getAlbum) {
     return (
       <>
-        <main className=' flex flex-col gap-2 flex-1 items-center justify-center'>
-          
-          <h2 className=' text-3xl'> <ShieldAlert className =' text-red-600 flex-col gap-1' /> Album Not Found <ShieldAlert className=' text-red-600' /></h2>
+        <main className=' flex flex-row gap-2 flex-1 items-center justify-center'>
+          <div className='flex-col gap-1'>
+            <ShieldAlert className=' text-red-600 text-3xl ' />
+            <h2 className=' text-3xl'>  Album Not Found </h2>
+            <ShieldAlert className=' text-red-600 text-3xl ' />
+
+          </div>
+
           <p className=' text-lg'>The album you are looking for does not exist.</p>
 
           <Link className=' text-xl' href="/Home">
