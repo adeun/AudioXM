@@ -33,16 +33,15 @@ export function AudioPlayer({playList}:client) {
           })
      }, [playList, currentPlaylistPosition])
 
-     function SelectSong(id:string) {
+     function SelectSong(index:number) {
+          console.log({
+               playList,
+               index,
+               currentPlaylistPosition,
+          });
+          setCurrentPlaylistPosition(index)
           
-          // const getSong = playList.filter(item => item.id === id )
-          const getIndex = playList.findIndex(item => item.id === id )
-          
-          
-          if( getIndex){
-               setCurrentPlaylistPosition(getIndex)
-               
-          }
+         
           
      }
 

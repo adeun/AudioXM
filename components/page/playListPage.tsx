@@ -39,6 +39,90 @@ type props = {
      album: Track,
 
 }
+// Convert RGB to HSL format
+interface HSLColor {
+     h: number; // Hue (0 - 360 degrees)
+     s: number; // Saturation (0 - 100 percent)
+     l: number; // Luminance (0 - 100 percent)
+}
+interface RGBColor {
+     r: number; // Red (0 - 255)
+     g: number; // Green (0 - 255)
+     b: number; // Blue (0 - 255)
+}
+// Convert RGB to HSL
+function rgbToHsl(r: number, g: number, b: number): HSLColor {
+     r /= 255;
+     g /= 255;
+     b /= 255;
+     const max = Math.max(r, g, b), min = Math.min(r, g, b);
+     let h = 0, s = 0, l = (max + min) / 2;
+
+     if (max !== min) {
+          const d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          switch (max) {
+               case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+               case g: h = (b - r) / d + 2; break;
+               case b: h = (r - g) / d + 4; break;
+          }
+          h /= 6;
+     }
+
+     return {
+          h: Math.round(h * 360),
+          s: Math.round(s * 100),
+          l: Math.round(l * 100),
+     };
+}// Function to adjust saturation and luminance
+function adjustSaturationAndLuminance(hslColor: HSLColor, saturationOffset: number, luminanceOffset: number): HSLColor {
+     const newSaturation = clamp(hslColor.s + saturationOffset, 0, 100);
+     const newLuminance = clamp(hslColor.l + luminanceOffset, 0, 100);
+
+     return {
+          h: hslColor.h,  // Keep the hue unchanged
+          s: newSaturation,
+          l: newLuminance
+     };
+}
+
+// Helper function to keep values within range
+function clamp(value: number, min: number, max: number): number {
+     return Math.min(Math.max(value, min), max);
+}
+// Convert HSL back to RGB
+function hslToRgb(h: number, s: number, l: number): RGBColor {
+     s /= 100;
+     l /= 100;
+
+     const c = (1 - Math.abs(2 * l - 1)) * s;
+     const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+     const m = l - c / 2;
+
+     let r = 0, g = 0, b = 0;
+
+     if (0 <= h && h < 60) {
+          r = c; g = x; b = 0;
+     } else if (60 <= h && h < 120) {
+          r = x; g = c; b = 0;
+     } else if (120 <= h && h < 180) {
+          r = 0; g = c; b = x;
+     } else if (180 <= h && h < 240) {
+          r = 0; g = x; b = c;
+     } else if (240 <= h && h < 300) {
+          r = x; g = 0; b = c;
+     } else if (300 <= h && h < 360) {
+          r = c; g = 0; b = x;
+     }
+
+     r = Math.round((r + m) * 255);
+     g = Math.round((g + m) * 255);
+     b = Math.round((b + m) * 255);
+
+     return { r, g, b };
+}
+
+
 
 export default function PlayListPage({ album }: props) {
      const { SelectSong, song, currentPlaylistPosition, PlaylistLength, setCurrentPlaylistPosition } = AudioPlayer({ playList: album.songList })
@@ -54,7 +138,7 @@ export default function PlayListPage({ album }: props) {
                     nativeImage.onload = () => {
 
 
-                         ctx.drawImage(nativeImage, 1, -nativeImage.height / 2)
+                         ctx.drawImage(nativeImage, 30, 0)
                          // get the original image dimensions from the original image
                          const imageData = ctx.getImageData(0, 0, nativeImage.width, nativeImage.height);
                          const data = imageData.data;
@@ -69,24 +153,21 @@ export default function PlayListPage({ album }: props) {
                                    blueSum += data[i + 2];  // Blue
                               }
                               // Calculate the average for each color channel
-                              const avgRed = 255 - (Math.floor(redSum / pixelCount));
-                              const avgGreen = 255 - (Math.floor(greenSum / pixelCount));
-                              const avgBlue = 255- (Math.floor(blueSum / pixelCount));
-                              const averageColorRGB = `#${((1 << 24) + (avgRed << 16) + (avgGreen << 8) + avgBlue).toString(16).slice(1).toUpperCase()}`;
-                              setRgbToHex(averageColorRGB);
-                              console.log(averageColorRGB);
+                              const r = (Math.floor(redSum / pixelCount));
+                              const g = (Math.floor(greenSum / pixelCount));
+                              const b = (Math.floor(blueSum / pixelCount));
+                              const hslColor = rgbToHsl(r, g, b);
+                              const adjustedHslColor = adjustSaturationAndLuminance(hslColor, 10, -15);
+                              const newRgbColor = hslToRgb(adjustedHslColor.h, adjustedHslColor.s, adjustedHslColor.l);
 
 
+                              setRgbToHex(`rgb(${newRgbColor.r}, ${newRgbColor.g}, ${newRgbColor.b})`);
+                              
                          }
-
-
-
                     }
                     nativeImage.onerror = (e) => {
                          console.error('Failed to load image', e);
                     }
-
-
 
                }
           }
@@ -168,7 +249,7 @@ export default function PlayListPage({ album }: props) {
                                         {/* Album songs */}
                                         {album.songList.map((song, index) => {
                                              return (
-                                                  <TableRow key={song.id} onClick={() => SelectSong(song.id)}>
+                                                  <TableRow key={song.id} onClick={() => SelectSong(index)}>
                                                        <TableCell>{index + 1}</TableCell>
                                                        {/* The song name and image and artist */}
                                                        <TableCell className=" flex flex-row items-center j gap-1">

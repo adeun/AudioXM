@@ -4,7 +4,7 @@ import prisma from "../db";
 
 export default async function FindAlbum({albumId}:{albumId:string}) {
      try {
-          console.log("Finding album by id ", albumId);
+         
           
           const album = await prisma.album.findUnique({
                where: {

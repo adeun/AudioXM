@@ -37,10 +37,11 @@ export default function AudioBar2({ mainSong, PlaylistLength, currentSong, setCu
 
      useEffect(() => {
           if (mainSong.path) {
+             
                if (audioRef.current && isPlaying){
                     const audio = audioRef.current
                     audio.src = mainSong.path;
-                    audio.currentTime =rawTime;
+                    // audio.currentTime =rawTime;
                     
                }
                

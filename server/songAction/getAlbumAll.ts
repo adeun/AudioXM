@@ -4,7 +4,7 @@ import prisma from "../db";
 
 export default async function GetAlbumAll() {
      try {
-          console.log("Getting all albums at getAlbumAll ");
+          
           
           const allAlbum = await prisma.album.findMany({
                select: {
@@ -19,7 +19,7 @@ export default async function GetAlbumAll() {
              
 
           }
-          console.log("Fetched albums:", allAlbum);
+         
 
           return allAlbum
 

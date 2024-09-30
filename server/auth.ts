@@ -70,37 +70,69 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                          // If password validation fails, return null
                          return null
                     } catch (error) {
+                         console.error("Error during authorization:", error);
+                         return null;
 
-
-
-                         return null
                     }
                },
           }),
 
      ],
      callbacks: {
-          jwt({ token, user }) {
+          async jwt({ token, user, account }) {
 
 
                if (user && user.id && user.email) { // User is available during sign-in
+                    let isArtistA = false
+                    let SubscribedA = false
+                    if (user?.id && !user?.isArtist || !user?.Subscribed) {
+                         const userDB = await prisma.user.findUnique({ where: { id: user.id, email: user.email } })
+                         if (userDB) {
+                              isArtistA = userDB.isArtist
+                              SubscribedA = userDB.Subscribed
+                         }
+
+                    }
+                    console.log("Token before update:", token);
+
                     token.id = user.id
                     token.email = user.email; // Ensure user email or other data is stored if needed
+                    token.isArtist = isArtistA;
+                    token.isAdmin = user.isAdmin;
+                    token.Subscribed = SubscribedA; // Add your additional user properties here
 
-
+               }
+               if (account) {
+                    token.accessToken = account.accessToken
                }
 
                return token
           },
 
-          session({ session, token }) {
+          async session({ session, token }) {
+               let isArtistA = false
+               let SubscribedA = false
+               if (token?.id && !token?.isArtist || !token?.Subscribed) {
+                    const userDB = await prisma.user.findUnique({ where: { id: token.id, email: token.email } })
+                    if (userDB) {
+                         isArtistA = userDB.isArtist
+                         SubscribedA = userDB.Subscribed
+                    }
+
+               }
+
 
                if (token?.id) {
                     return {
                          ...session,
                          user: {
                               ...session.user,
-                              id: token.id,
+                              id: token.sub,
+                              isArtist: isArtistA,
+                              isAdmin: token.isAdmin,
+                              Subscribed: SubscribedA,
+
+                              accessToken: token.accessToken
                          },
                     };
                }

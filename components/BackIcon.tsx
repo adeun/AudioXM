@@ -96,7 +96,7 @@ export default function BackIcon() {
                     height: `${icon.height}px`,
                     transform: `rotate(${icon.randomRotation}deg)`,
                     color: `${icon.color}`,
-                    // transition: `all 0.5s ease-in-out`,
+                     transition: `all 0.5s ease-in-out`,
 
                }}>
                     {icon.icon}

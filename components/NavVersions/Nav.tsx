@@ -83,7 +83,7 @@ export default function Nav2({ user, Search }: Props) {
                                         <DropdownMenuItem>Profile</DropdownMenuItem>
                                         <DropdownMenuItem>Billing</DropdownMenuItem>
                                         <DropdownMenuItem>Team</DropdownMenuItem>
-                                        <DropdownMenuItem>Subscription</DropdownMenuItem>
+                                        {!user.user.Subscribed && <DropdownMenuItem onClick={()=>router.push("/Subscribe")}>Subscription</DropdownMenuItem> }
                                         <DropdownMenuItem className='bg-destructive text-destructive-foreground hover:bg-destructive/90' onClick={() => LogoutM.mutate()} > {LogoutM.isPending && <LoaderCircle className=' animate-spin' />} logout</DropdownMenuItem>
                                    </DropdownMenuContent>
                               </DropdownMenu>

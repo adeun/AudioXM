@@ -22,6 +22,10 @@ const config = {
       },
     },
     extend: {
+      boxShadow:{
+        'custom-pink': '0 4px 20px rgba(219, 39, 119, 0.5)'
+
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

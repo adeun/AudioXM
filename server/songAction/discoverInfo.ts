@@ -3,7 +3,7 @@
 import prisma from "../db";
 
 export default async function DiscoverRouteV() {
-     console.log("Discover test server");
+     
      try {
           const discoverInfo = await prisma.album.findMany({
                select:{
@@ -12,7 +12,7 @@ export default async function DiscoverRouteV() {
                     id: true
                }
           })
-          console.log(discoverInfo);
+        // Check if any albums were found in the database
           if (!discoverInfo || discoverInfo.length === 0) {
                throw new Error("No albums found in the database.");
           }
