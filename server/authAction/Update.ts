@@ -21,6 +21,18 @@ export default async function updateUser({ userId, formData, oldPassword }: { us
           if (formData.password && !(await bcrypt.compare(oldPassword, user.password))) {
                return { error: "Old password is incorrect" };
           }
+          if (formData.email){
+               // Check if the new email is already taken
+               const isEmailTaken = await prisma.user.findFirst({
+                    where: {
+                         email: formData.email,
+                    },
+               });
+               if (isEmailTaken) {
+                    return { error: "Email is already taken" };
+               }
+               updateData.email = formData.email;
+          }
           if (formData.password) {
                // Hash the new password
                updateData.password = await bcrypt.hash(formData.password, 10);
