@@ -14,11 +14,18 @@ declare module "next-auth" {
       * or the second parameter of the `session` callback, when using a database.
       */
      interface User {
-          id: string,
-          Subscribed:boolean,
-          idToken?: string,
-          isArtist:boolean,
-          isAdmin: boolean,
+          id: string;
+          idToken?: string;
+          isArtist: boolean;
+          isAdmin: boolean;
+          plan: {
+               id: string;
+               Subscribed: boolean;
+               name: string;
+               description: string;
+               price: number;
+               duration: string;
+          } | null;
 
      }
      /**
@@ -26,8 +33,8 @@ declare module "next-auth" {
       * Usually contains information about the provider being used, like OAuth tokens (`access_token`, etc).
       */
      interface Account {
-          accessToken:string,
-      }
+          accessToken: string,
+     }
 
      /**
       * Returned by `useSession`, `auth`, contains information about the active session.
@@ -37,9 +44,17 @@ declare module "next-auth" {
 
                id: string,
                accessToken?: string,
-               Subscribed: boolean,
+
                isArtist: boolean,
                isAdmin: boolean,
+               plan: {
+                    id: string,
+                    Subscribed: boolean,
+                    name: string,
+                    description: string,
+                    price: number
+                    duration: string,
+               } | null,
 
 
           } & DefaultSession["user"]
@@ -58,8 +73,16 @@ declare module "next-auth/jwt" {
           id: string,
           email: string,
           accessToken?: string,
-          Subscribed: boolean,
+
           isArtist: boolean,
           isAdmin: boolean,
+          plan: {
+               id: string,
+               Subscribed: boolean,
+               name: string,
+               description: string,
+               price: number
+               duration: string,
+          } | null,
      }
 }

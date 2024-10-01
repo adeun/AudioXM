@@ -12,6 +12,9 @@ const routes = {
           /^\/Discover\/?$/,
           /^\/Song\/[^\/]+\/?$/,
           /^\/AddSong\/?$/,
+          /^\/EditSong\/[^\/]+\/?$/,
+          /^\/Profile\/?$/,
+          /^\/Settings\/?$/,
           
 
      ],
@@ -28,24 +31,24 @@ const routes = {
 
 export default  middleware((req) => {
       const pathname = req.nextUrl.pathname
-      const user = req.auth
+      const Session = req.auth
      const isProtectedRoute = routes.Protection.some((pattern) => pattern.test(pathname));
      const isAuthRoute = routes.auth.some((pattern) => pattern.test(pathname));
      const isSubscriptionRoute = routes.Subscription.some((pattern) => pattern.test(pathname));
      
      
      
-     if (isProtectedRoute && user && user?.user.Subscribed === false){
+     if (isProtectedRoute && Session && Session?.user.plan?.Subscribed === false){
           return NextResponse.redirect(new URL('/Subscribe', req.nextUrl));
      }
-     if (isAuthRoute && user ){
+     if (isAuthRoute && Session ){
           return NextResponse.redirect(new URL('/Home', req.nextUrl));
      }
-     if (isProtectedRoute && !user){
+     if (isProtectedRoute && !Session){
           return NextResponse.redirect(new URL('/', req.nextUrl));
      }
      
-     if (isSubscriptionRoute && user?.user.Subscribed){
+     if (isSubscriptionRoute && Session?.user.plan?.Subscribed){
           return NextResponse.redirect(new URL('/Home', req.nextUrl));
      }
      return NextResponse.next();

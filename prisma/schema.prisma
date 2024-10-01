@@ -19,7 +19,6 @@ model User {
   password      String
   birth         String
   PhoneNumber   BigInt
-  Subscribed    Boolean           @default(false)
   isAdmin       Boolean           @default(false)
   isArtist      Boolean           @default(false)
   accounts      Account[]
@@ -38,6 +37,7 @@ model SubscriptionPlan {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   userID      String   @unique
+  Subscribed  Boolean  @default(false)
   User        User     @relation(fields: [userID], references: [id], onDelete: Cascade)
 }
 

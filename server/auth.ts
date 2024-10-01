@@ -15,7 +15,14 @@ type Login = {
      image: string | null;
      password: string;
 } | null
-
+type Plan = {
+     id: string,
+     Subscribed: boolean,
+     name: string,
+     description: string,
+     price: number
+     duration: string,
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
      adapter: PrismaAdapter(prisma),
@@ -34,21 +41,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                },
                authorize: async (credentials) => {
                     try {
-
-
-
                          const { email, password } = await zodLoginForm.parseAsync(credentials)
-
-
 
                          // Find the user by email in the database
                          const getUser = await prisma.user.findFirst({
                               where: {
                                    email: email,
                               },
+                              include: {
+                                   plan: {
+                                        select: {
+                                             id: true,
+                                             Subscribed: true,
+                                             name: true,
+                                             description: true,
+                                             price: true,
+                                             duration: true,
+                                        },
+                                   },
+                              },
                          })
-
-
 
                          // if the user is not found
                          if (!getUser) { return null; }
@@ -84,12 +96,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                if (user && user.id && user.email) { // User is available during sign-in
                     let isArtistA = false
-                    let SubscribedA = false
-                    if (user?.id && !user?.isArtist || !user?.Subscribed) {
-                         const userDB = await prisma.user.findUnique({ where: { id: user.id, email: user.email } })
+                    let userPlan: Plan | null = null;
+                    if (user?.id && !user?.isArtist || !user?.plan) {
+                         const userDB = await prisma.user.findUnique({
+                              where: { id: user.id, email: user.email },
+                              select:{
+                                   isArtist:true,
+                                   isAdmin:true,
+                                   plan:{
+                                        select: {
+                                             id: true,
+                                             Subscribed: true,
+                                             name: true,
+                                             description: true,
+                                             price: true,
+                                             duration: true,
+                                        }
+                                   },
+                              }
+                         })
                          if (userDB) {
                               isArtistA = userDB.isArtist
-                              SubscribedA = userDB.Subscribed
+                              userPlan = userDB.plan
                          }
 
                     }
@@ -99,7 +127,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     token.email = user.email; // Ensure user email or other data is stored if needed
                     token.isArtist = isArtistA;
                     token.isAdmin = user.isAdmin;
-                    token.Subscribed = SubscribedA; // Add your additional user properties here
+                    token.plan = userPlan; // Add your additional user properties here
 
                }
                if (account) {
@@ -111,12 +139,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           async session({ session, token }) {
                let isArtistA = false
-               let SubscribedA = false
+               let userPlan: Plan | null = null;
                if (token?.id && !token?.isArtist || !token?.Subscribed) {
-                    const userDB = await prisma.user.findUnique({ where: { id: token.id, email: token.email } })
+                    const userDB = await prisma.user.findUnique({ 
+                         where: { id: token.id, email: token.email } ,
+                         select:{
+                              isArtist:true,
+                              isAdmin:true,
+                              plan:{
+                                   select: {
+                                        id: true,
+                                        Subscribed: true,
+                                        name: true,
+                                        description: true,
+                                        price: true,
+                                        duration: true,
+                                   }
+                              },
+                         }
+
+                    })
                     if (userDB) {
                          isArtistA = userDB.isArtist
-                         SubscribedA = userDB.Subscribed
+                         userPlan = userDB.plan
                     }
 
                }
@@ -130,7 +175,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                               id: token.sub,
                               isArtist: isArtistA,
                               isAdmin: token.isAdmin,
-                              Subscribed: SubscribedA,
+                              plan: userPlan,
 
                               accessToken: token.accessToken
                          },

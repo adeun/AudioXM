@@ -80,10 +80,10 @@ export default function Nav2({ user, Search }: Props) {
                                    <DropdownMenuContent>
                                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem>Profile</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={()=> router.push("/Profile")}>Profile</DropdownMenuItem>
                                         <DropdownMenuItem>Billing</DropdownMenuItem>
                                         <DropdownMenuItem>Team</DropdownMenuItem>
-                                        {!user.user.Subscribed && <DropdownMenuItem onClick={()=>router.push("/Subscribe")}>Subscription</DropdownMenuItem> }
+                                        {!user.user.plan && <DropdownMenuItem onClick={()=>router.push("/Subscribe")}>Subscription</DropdownMenuItem> }
                                         <DropdownMenuItem className='bg-destructive text-destructive-foreground hover:bg-destructive/90' onClick={() => LogoutM.mutate()} > {LogoutM.isPending && <LoaderCircle className=' animate-spin' />} logout</DropdownMenuItem>
                                    </DropdownMenuContent>
                               </DropdownMenu>

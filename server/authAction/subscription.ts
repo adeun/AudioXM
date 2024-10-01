@@ -34,19 +34,18 @@ export default async function  SubscriptionPlan({plan}:{plan:"Student Plan" | "P
                     where: {
                          id: Session.user.id,
                     },
-                    data: {
-                         Subscribed: true,
+                    data:{
                          plan:{
                               create:{
                                    name: subscriptionPlan.name,
                                    price: subscriptionPlan.price,
-                                   description:"",
-                                   duration:futureDate.toString()
-                                  
+                                   duration: futureDate.toString(),
+                                   Subscribed: true,
+                                   description:""
+                                   
                               }
                          }
-                         
-                    },
+                    }
                })
                return{status:true}
           }
