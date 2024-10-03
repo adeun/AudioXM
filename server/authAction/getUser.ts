@@ -20,7 +20,6 @@ export default async function GetUser({userId}:{userId:string}) {
                email: user.email,
                id: user.id,
                plan: user.plan,
-               subscribed: user.Subscribed,
                isArtist: user.isArtist,
                birth: user.birth,
                phoneNumber: user.PhoneNumber.toString(), // Convert to string

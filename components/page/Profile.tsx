@@ -31,7 +31,6 @@ type user = {
      image: string | null;
      birth: string;
      phoneNumber: string;
-     subscribed: boolean;
      isAdmin: boolean;
      isArtist: boolean;
      plan: {
