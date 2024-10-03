@@ -5,6 +5,8 @@ import Credentials from "next-auth/providers/credentials"
 import prisma from "./db"
 import bcrypt from "bcryptjs";
 import { zodLoginForm } from "@/lib/ZOD"
+import { Temporal } from "@js-temporal/polyfill";
+
 type Login = {
      createdAt: Date;
      updatedAt: Date;
@@ -146,6 +148,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                          select:{
                               isArtist:true,
                               isAdmin:true,
+                              name:true,
                               plan:{
                                    select: {
                                         id: true,
@@ -161,7 +164,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     })
                     if (userDB) {
                          isArtistA = userDB.isArtist
-                         userPlan = userDB.plan
+                         if (userDB.plan && Temporal.PlainDate.compare(Temporal.PlainDate.from(userDB.plan.duration) , Temporal.Now.plainDateISO()) == 1){
+                              userPlan = userDB.plan
+                         }else{
+                              userPlan = null
+                         }
+                         
                     }
 
                }

@@ -180,7 +180,7 @@ export default function AudioBar2({ mainSong, PlaylistLength, currentSong, setCu
                {/* song img and name  */}
                <div className=' flex flex-row gap-1'>
                     {/* song Ing */}
-                    <div className='flex  w-16 rounded-lg bg-primary/80 p-[2px] overflow-clip items-center justify-center'>
+                    <div className='flex  w-20 rounded-lg bg-primary/80 p-[2px] overflow-clip items-center justify-center'>
                          <h1 className=' text-primary-foreground/75 text-5xl'>{iconSizeNmw[0]}</h1>
                     </div>
                     {/* Song name  */}

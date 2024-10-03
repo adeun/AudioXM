@@ -10,26 +10,35 @@ import { useRouter } from 'next/navigation'
 export default function Subscribed() {
      const router = useRouter()
      const Subscribe = useMutation({
-          mutationFn: SubscriptionPlan
-     })
-     useEffect(() =>{
-          if (Subscribe.data?.status){
-               
-               router.push('/Home')
-               window.location.reload()
-               
-              
-          }
-          
-     },[Subscribe.data])
+          mutationFn: SubscriptionPlan,
+          onSuccess: (data) => {
 
-     
+               if (data)
+                    if (data.status) {
+                         toast({
+                              title: "Success",
+                              description: data.message,
+                         })
+                         router.push('/Home')
+                        
+                    } else {
+                         toast({
+                              title: "Error",
+                              description: data.message,
+                         })
+                    }
+
+          },
+
+     })
+
+
      return (
           <>
-           <div className=' flex items-center justify-center'>
-                <h1 className=' text-6xl'>Subscribed plans</h1>
-           </div>
-              
+               <div className=' flex items-center justify-center'>
+                    <h1 className=' text-6xl'>Subscribed plans</h1>
+               </div>
+
 
                <main className=' flex-1 flex flex-row gap-20 items-center justify-center'>
                     {/* Student plan */}
@@ -43,7 +52,7 @@ export default function Subscribed() {
                          <h1 className=' relative text-3xl'><span className=' text-base text-justify'>$</span>8.99/<span>mo</span></h1>
 
 
-                         <Button onClick={()=>{Subscribe.mutate({plan:"Student Plan"})}} className=' w-[45%]'>{Subscribe.isPending && <LoaderCircle className=' animate-spin'/>} Subscribe </Button>
+                         <Button onClick={() => { Subscribe.mutate({ plan: "Student Plan" }) }} className=' w-[45%]'>{Subscribe.isPending && <LoaderCircle className=' animate-spin' />} Subscribe </Button>
 
                     </div>
                     {/* Premium plan */}
@@ -58,7 +67,7 @@ export default function Subscribed() {
                          <h1 className=' relative text-3xl'><span className=' text-base text-justify'>$</span>14.99/<span>mo</span></h1>
 
 
-                         <Button onClick={()=>{Subscribe.mutate({plan:"Premium"})}} className=' w-[45%]'>{Subscribe.isPending && <LoaderCircle className=' animate-spin'/>} Subscribe </Button>
+                         <Button onClick={() => { Subscribe.mutate({ plan: "Premium" }) }} className=' w-[45%]'>{Subscribe.isPending && <LoaderCircle className=' animate-spin' />} Subscribe </Button>
 
 
                     </div>
@@ -71,7 +80,7 @@ export default function Subscribed() {
                          <p>You can listen to unlimited songs</p>
                          <h1 className=' relative text-3xl'><span className=' text-base text-justify'>$</span>9.99/<span>mo</span></h1>
 
-                         <Button onClick={()=>{Subscribe.mutate({plan:"Professional"})}} className=' w-[45%]'>{Subscribe.isPending && <LoaderCircle className=' animate-spin'/>} Subscribe </Button>
+                         <Button onClick={() => { Subscribe.mutate({ plan: "Professional" }) }} className=' w-[45%]'>{Subscribe.isPending && <LoaderCircle className=' animate-spin' />} Subscribe </Button>
 
 
                     </div>
