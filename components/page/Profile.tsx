@@ -13,6 +13,7 @@ import { useToast } from "@/components/hook/use-toast"
 import updateUser from '@/server/authAction/Update'
 import { LoaderCircle } from 'lucide-react'
 import { Temporal } from "@js-temporal/polyfill";
+import { useRouter } from 'next/navigation'
 
 
 
@@ -84,6 +85,7 @@ export default function Profile({ Session }: ProfileTabsContent) {
 
 // ProfileTab Component
 function ProfileTab({ user }: { user: user }) {
+     const router = useRouter()
      const { toast } = useToast()
      const [info, setInfo] = useState<z.infer<typeof zodUpdateForm>>({});
      const [oldPassword, setOldPassword] = useState('');
@@ -103,6 +105,7 @@ function ProfileTab({ user }: { user: user }) {
                     setInfo({});
                     setOldPassword('');
                     setConfirmPassword('');
+                    window.location.reload();
 
 
                }
@@ -157,8 +160,8 @@ function ProfileTab({ user }: { user: user }) {
      }
 
      return (
-          <div className=' flex flex-1 flex-col'>
-               <div className='grid grid-cols-1 md:grid-cols-2 gap-6 h-5/6 w-4/5 p-4'>
+          <div className=' flex flex-1 flex-col gap-3'>
+               <div className='grid grid-cols-1 md:grid-cols-2 gap-6 h-5/6 p-2'>
                     <div className=' w-full md:w-auto'>
                          <Label className="text-lg font-medium" htmlFor='name'>name</Label>
                          <Input disabled={UpdatedUserMutation.isPending} id="name" name='name' onChange={(e) => setInfo(preData => ({ ...preData, name: e.target.value }))} placeholder={user.name} value={info.name} />

@@ -24,7 +24,7 @@ const storage = getStorage(app);
 const createStorageRef = (folderName: string, uuidName: string) => ref(storage, `${folderName}/${uuidName}`);
 
 // Function to upload a base64-encoded string to Firebase Storage
-export async function uploadBase64(path: string, folderName: "AudioFileStorage" | "ImageFileStorage") {
+export async function uploadBase64(path: string, folderName: "AudioFileStorage" | "ImageFileStorage" |"ProfileImage") {
      let newName = uuidv4();
      console.log("Uploading base64 file in Firebase");
 

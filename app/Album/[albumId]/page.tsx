@@ -7,10 +7,17 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { House } from 'lucide-react';
 import { ShieldAlert } from 'lucide-react';
+import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 export default async function page({ params }: { params: { albumId: string } }) {
   const getAlbum = await FindAlbum({ albumId: params.albumId })
   const Session = await auth()
-
+  
+  if (!Session) {
+    revalidatePath('/')
+    redirect('/')
+    
+  }
   if (!getAlbum) {
     return (
       <>
@@ -39,7 +46,7 @@ export default async function page({ params }: { params: { albumId: string } }) 
     <>
       <Nav2 Search={null} user={Session} />
       <main className=' flex flex-col gap-2 flex-1'>
-        <PlayListPage album={getAlbum} />
+        <PlayListPage user={Session} album={getAlbum} />
 
 
       </main>

@@ -25,6 +25,41 @@ model User {
   Authenticator Authenticator[]
   sessions      Session[]
   plan          SubscriptionPlan?
+  playList      playList[]
+}
+
+model imgFile {
+  id         String   @id @default(cuid())
+  imageUrl   String
+  name       String
+  size       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  firebaseId String
+  playListID String   @unique
+  type       String
+  playList   playList @relation(fields: [playListID], references: [id], onDelete: Cascade)
+}
+
+model playList {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userID      String
+  UPlist      UPlist[]
+  file        imgFile?
+  User        User     @relation(fields: [userID], references: [id], onDelete: Cascade)
+}
+
+model UPlist {
+  id         String   @id @default(cuid())
+  songID     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  playListID String
+  playList   playList @relation(fields: [playListID], references: [id], onDelete: Cascade)
 }
 
 model SubscriptionPlan {
@@ -75,17 +110,6 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
-}
-
-model imgFile {
-  id        String    @id @default(cuid())
-  userId    String
-  imageUrl  String
-  name      String
-  typeLog   ImageType
-  size      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
 }
 
 model Album {

@@ -13,6 +13,9 @@ import { Image as ImageLogo, Plus } from 'lucide-react';
 import Image from 'next/image';
 import { AudioPlayer } from '../hook/audioPlayer';
 import AudioBar2 from '../Audio/AudioBar2';
+import { useQuery } from '@tanstack/react-query';
+import AddNewPlayList from '../addNewPlayList';
+import { Session } from 'next-auth';
 
 type Track = {
      artistList: {
@@ -34,9 +37,21 @@ type Track = {
           firebaseId: string;
      }[],
 }
+type playlistsResult = {
+     data: {
+          id: string;
+          name: string;
+          file: {
+               id: string;
+               name: string;
+               imageUrl: string;
+          } | null;
+     }[]
+}
 
 type props = {
      album: Track,
+     user: Session
 
 }
 // Convert RGB to HSL format
@@ -121,12 +136,27 @@ function hslToRgb(h: number, s: number, l: number): RGBColor {
 
      return { r, g, b };
 }
+async function fetchPlaylist() { // Fetch the users discovering page
+     const response = await fetch('/api/userPlayList');
+     if (!response.ok) {
+          throw new Error('Failed to fetch albums');
+     }
+     const data: playlistsResult = await response.json();
+     console.log(data);
+
+     return data;
+}
 
 
 
-export default function PlayListPage({ album }: props) {
+export default function PlayListPage({ album,user }: props) {
+     const [showPlaylist, setShowPlaylist] = useState(false)
      const { SelectSong, song, currentPlaylistPosition, PlaylistLength, setCurrentPlaylistPosition } = AudioPlayer({ playList: album.songList })
      const [rgbToHex, setRgbToHex] = useState("#000000");
+     const userPLayList = useQuery({
+          queryKey: ['fetchPlaylist'], // Unique key for caching and refetching
+          queryFn: fetchPlaylist,
+     });
      const canvasRef = useRef<HTMLCanvasElement>(null)
      useEffect(() => {
           if (canvasRef.current) {
@@ -184,13 +214,38 @@ export default function PlayListPage({ album }: props) {
 
      return (
           <>
+          {showPlaylist && <AddNewPlayList Session={user} setShowPlaylist={setShowPlaylist} />}
                <main className=' grid grid-cols-[6%_94%] flex-1  gap-1 h-full overflow-hidden mt-1 '>
                     {/* user playList */}
-                    <div className=' h-full w-full flex justify-center p-1 rounded-sm border border-border '>
-                         <div className=' flex  items-center justify-center w-20 h-20 rounded-md bg-border/50'>
+                    <div className=' h-full w-full flex flex-col   gap-2  p-1 rounded-sm border border-border '>
+                         <div onClick={() => setShowPlaylist(true)} className=' flex  items-center justify-center w-20 h-20 rounded-md bg-border/50'>
                               <Plus />
 
                          </div>
+                         {userPLayList.data?.data && userPLayList.data.data.map(pLayList => {
+                              const Name = Array.from(pLayList.name)
+                              return (
+                                   <div key={pLayList.id} className=' ml-auto mr-auto relative flex  items-center justify-center w-20 h-20 rounded-md bg-border/50 overflow-clip hover:bg-border/70'>
+                                        {pLayList.file ? (<>
+                                             <Image
+                                                  src={pLayList.file.imageUrl}
+                                                  alt={pLayList.name}
+                                                  className=' w-full h-full object-cover'
+                                                  width={900}
+                                                  height={900} />
+                                        </>)
+                                             : (<>
+                                                  <h1>{Name[0]}</h1>
+                                             </>)
+                                        }
+                                        <div className=' absolute w-full h-full hover:bg-border  opacity-30'>
+
+                                        </div>
+                                        
+
+                                   </div>
+                              )
+                         })}
 
                     </div>
 

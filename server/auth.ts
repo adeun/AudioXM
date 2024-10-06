@@ -142,6 +142,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           async session({ session, token }) {
                let isArtistA = false
                let userPlan: Plan | null = null;
+               let Name = token.name;
                if (token?.id && !token?.isArtist || !token?.Subscribed) {
                     const userDB = await prisma.user.findUnique({ 
                          where: { id: token.id, email: token.email } ,
@@ -163,7 +164,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                     })
                     if (userDB) {
-                         isArtistA = userDB.isArtist
+                         isArtistA = userDB.isArtist;
+                         Name = userDB.name; // Ensure user name or other data is stored if needed
                          if (userDB.plan && Temporal.PlainDate.compare(Temporal.PlainDate.from(userDB.plan.duration) , Temporal.Now.plainDateISO()) == 1){
                               userPlan = userDB.plan
                          }else{
@@ -180,6 +182,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                          ...session,
                          user: {
                               ...session.user,
+                              name: Name, // Ensure user name or other data is stored if needed
                               id: token.sub,
                               isArtist: isArtistA,
                               isAdmin: token.isAdmin,
