@@ -24,13 +24,17 @@ export function AudioPlayer({playList}:client) {
      });
      //
      useEffect(() => {
-          setActiveSong({
-               name: playList[currentPlaylistPosition].name,
-               path: playList[currentPlaylistPosition].audioUrl,
-               currentTime: 0,
-               duration: playList[currentPlaylistPosition].duration,
-               id: playList[currentPlaylistPosition].id
-          })
+          if (playList.length > 0) {
+               setActiveSong({
+                    name: playList[currentPlaylistPosition].name,
+                    path: playList[currentPlaylistPosition].audioUrl,
+                    currentTime: 0,
+                    duration: playList[currentPlaylistPosition].duration,
+                    id: playList[currentPlaylistPosition].id
+               })
+
+          }
+        
      }, [playList, currentPlaylistPosition])
 
      function SelectSong(index:number) {

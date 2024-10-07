@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Session } from 'next-auth'
 import { Plus } from 'lucide-react';
 import AddNewPlayList from '../addNewPlayList';
+import UserMadePlayList from '../userMadePlayList';
 
 type AAA = {
      name: string;
@@ -38,16 +39,7 @@ type playlistsResult = {
      }[]
 }
 
-async function fetchPlaylist() { // Fetch the users discovering page
-     const response = await fetch('/api/userPlayList');
-     if (!response.ok) {
-          throw new Error('Failed to fetch albums');
-     }
-     const data: playlistsResult = await response.json();
-     console.log(data);
 
-     return data;
-}
 async function fetchAlbums() { // Fetch the users discovering page
      const response = await fetch('/api/discover');
      if (!response.ok) {
@@ -69,10 +61,7 @@ export default function DiscoverView({ user }: Component) {
           queryKey: ['allPlaylists'], // Unique key for caching and refetching
           queryFn: fetchAlbums,
      });
-     const userPLayList = useQuery({
-          queryKey: ['fetchPlaylist'], // Unique key for caching and refetching
-          queryFn: fetchPlaylist,
-     });
+     
      useEffect(() => {
           if (allPlaylists) {
                setPlaylistsResult(allPlaylists)
@@ -85,37 +74,7 @@ export default function DiscoverView({ user }: Component) {
                <Nav2 user={user} Search={{ searchValue: search, setSearchValue: setSearch }} />
                <main className='grid grid-cols-[6%_94%] flex-1  gap-1'>
                     {/* user playList */}
-                    <div className=' h-full w-full flex flex-col flex-wrap gap-2  p-1 rounded-sm border border-border '>
-                         <div onClick={() => setShowPlaylist(true)} className=' flex  items-center justify-center w-20 h-20 rounded-md bg-border/50 hover:bg-border/70'>
-                              <Plus />
-
-                         </div>
-                         {userPLayList.data?.data && userPLayList.data.data.map(pLayList => {
-                              const Name = Array.from(pLayList.name)
-                              return (
-                                   <div key={pLayList.id} className=' ml-auto mr-auto relative flex  items-center justify-center w-20 h-20 rounded-md bg-border/50 overflow-clip hover:bg-border/70'>
-                                        {pLayList.file ? (<>
-                                             <Image
-                                                  src={pLayList.file.imageUrl}
-                                                  alt={pLayList.name}
-                                                  className=' w-full h-full object-cover'
-                                                  width={900}
-                                                  height={900} />
-                                        </>)
-                                             : (<>
-                                                  <h1>{Name[0]}</h1>
-                                             </>)
-                                        }
-                                        <div className=' absolute w-full h-full hover:bg-border  opacity-30'>
-
-                                        </div>
-                                        
-
-                                   </div>
-                              )
-                         })}
-
-                    </div>
+                    <UserMadePlayList setShowPlaylist={setShowPlaylist}/>
 
                     {/*  */}
                     <main className=' flex flex-col gap-2 w-full h-full  rounded-sm border border-border'>
@@ -135,7 +94,7 @@ export default function DiscoverView({ user }: Component) {
                                         {playlistsResult?.map(item => {
                                              const cover = item.cover
                                              return (
-                                                  <Link key={item.id} href={`/Album/${item.id}`}>
+                                                  <Link key={item.id} href={`/Album/${item.id}?type=Album`}>
                                                        <div className=' w-72 h-[295px] flex flex-col gap-1 bg-secondary/75 rounded border border-border p-1 items-center  '>
                                                             <div className='  h-60 bg-green-800 rounded overflow-clip border border-ring/75 flex items-center justify-center'>
                                                                  {cover && <>

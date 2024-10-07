@@ -9,16 +9,76 @@ import { House } from 'lucide-react';
 import { ShieldAlert } from 'lucide-react';
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-export default async function page({ params }: { params: { albumId: string } }) {
-  const getAlbum = await FindAlbum({ albumId: params.albumId })
+import GetUserPlayList from '@/server/playList/getUserPlayList'
+
+
+interface Props {
+  params: { albumId: string };
+  searchParams: { [key: string]: string | undefined };
+}
+type Track = {
+  artistList: {
+    name: string;
+  }[];
+  id: string;
+  name: string;
+  cover: {
+    name: string;
+    imageUrl: string;
+  } | null;
+  songList: {
+    id: string;
+    name: string;
+    audioUrl: string;
+    type: string;
+    duration: number;
+    size: string;
+    firebaseId: string;
+  }[],
+}
+
+type userPLayList = {
+  id: string;
+  name: string;
+  cover: {
+    name: string;
+    imageUrl: string;
+  } | null;
+  songList: {
+    id: string;
+    name: string;
+    type: string;
+    duration: number;
+    size: string;
+    firebaseId: string;
+    audioUrl: string;
+  }[];
+}
+
+export default async function page({ params, searchParams }: Props) {
+  let Album: (Track | userPLayList) | null;
+
   const Session = await auth()
-  
+  const type = searchParams.type;
+
+
   if (!Session) {
     revalidatePath('/')
     redirect('/')
-    
+
   }
-  if (!getAlbum) {
+
+  if (type === "Album") {
+    Album = await FindAlbum({ albumId: params.albumId })
+
+  } else if (type === "playlist" ) {
+    Album = await GetUserPlayList({ userID: Session.user.id, playlistsID: params.albumId })
+  } else {
+    Album = null
+  }
+
+
+  if (!Album) {
     return (
       <>
         <main className=' flex flex-col gap-2 flex-1 items-center justify-center'>
@@ -40,13 +100,15 @@ export default async function page({ params }: { params: { albumId: string } }) 
       </>
     )  // Redirect to 404 page or error page if album not found.
   }
+  console.log(Album);
+  
 
 
   return (
     <>
       <Nav2 Search={null} user={Session} />
       <main className=' flex flex-col gap-2 flex-1'>
-        <PlayListPage user={Session} album={getAlbum} />
+        <PlayListPage user={Session} album={Album} />
 
 
       </main>

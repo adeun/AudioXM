@@ -148,7 +148,7 @@ function ProfileTab({ user }: { user: user }) {
 
           }
 
-          if (validatedInfo.data) {
+          if (validatedInfo.data.PhoneNumber || validatedInfo.data.birth || validatedInfo.data.email || validatedInfo.data.name || validatedInfo.data.password) {
                UpdatedUserMutation.mutate({ userId: user.id, formData: validatedInfo.data, oldPassword: oldPassword })
                console.log(validatedInfo.data);
           }
